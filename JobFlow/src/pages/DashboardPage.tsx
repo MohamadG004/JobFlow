@@ -1,26 +1,26 @@
 import React, { useState, useMemo } from 'react';
 import {
   Box, Typography, Button, Chip, CircularProgress, Alert,
-  Snackbar, Stack, TextField, InputAdornment, Fab,
+  Snackbar, Stack, TextField, InputAdornment,
 } from '@mui/material';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
+import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
 import {
-  DndContext, DragEndEvent, DragOverEvent, PointerSensor,
-  useSensor, useSensors, DragOverlay, DragStartEvent, closestCorners,
+  DndContext, DragEndEvent, PointerSensor, useSensor, useSensors,
+  DragOverlay, DragStartEvent, closestCorners,
 } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { useSortable } from '@dnd-kit/sortable';
+import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useApplications } from '@/hooks/useApplications';
 import ApplicationFormDialog from '@/components/board/ApplicationFormDialog';
 import type { Application, ApplicationStatus, ApplicationInsert } from '@/types';
 import { format } from 'date-fns';
-import EditRoundedIcon from '@mui/icons-material/EditRounded';
-import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
-import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
-import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
 
+// ── Column config ─────────────────────────────────────────────────────────────
 const COLUMNS: { id: ApplicationStatus; label: string; color: string; bg: string }[] = [
   { id: 'Applied',   label: 'Applied',   color: '#2563EB', bg: '#EFF6FF' },
   { id: 'Interview', label: 'Interview', color: '#D97706', bg: '#FFFBEB' },
@@ -33,22 +33,20 @@ interface CardProps {
   app: Application;
   onEdit: (app: Application) => void;
   onDelete: (id: string) => void;
-  isDragging?: boolean;
 }
 
-const AppCard: React.FC<CardProps> = ({ app, onEdit, onDelete, isDragging }) => {
+const AppCard: React.FC<CardProps> = ({ app, onEdit, onDelete }) => {
   const col = COLUMNS.find((c) => c.id === app.status)!;
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: app.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.4 : 1,
-  };
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: app.id,
+  });
 
   return (
     <Box
-      ref={setNodeRef} style={style} {...attributes} {...listeners}
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.4 : 1 }}
+      {...attributes}
+      {...listeners}
       sx={{
         bgcolor: 'background.paper', borderRadius: 2, p: 2,
         border: '1px solid', borderColor: 'divider',
@@ -65,14 +63,24 @@ const AppCard: React.FC<CardProps> = ({ app, onEdit, onDelete, isDragging }) => 
         </Box>
         <Stack direction="row" spacing={0.25} sx={{ ml: 1, flexShrink: 0 }}>
           <Box
-            component="button" onClick={(e) => { e.stopPropagation(); onEdit(app); }}
-            sx={{ border: 'none', bgcolor: 'transparent', cursor: 'pointer', p: 0.5, borderRadius: 1, color: 'text.secondary', '&:hover': { color: 'primary.main', bgcolor: '#EFF6FF' } }}
+            component="button"
+            onClick={(e) => { e.stopPropagation(); onEdit(app); }}
+            sx={{
+              border: 'none', bgcolor: 'transparent', cursor: 'pointer',
+              p: 0.5, borderRadius: 1, color: 'text.secondary', display: 'flex',
+              '&:hover': { color: 'primary.main', bgcolor: '#EFF6FF' },
+            }}
           >
             <EditRoundedIcon sx={{ fontSize: 16 }} />
           </Box>
           <Box
-            component="button" onClick={(e) => { e.stopPropagation(); onDelete(app.id); }}
-            sx={{ border: 'none', bgcolor: 'transparent', cursor: 'pointer', p: 0.5, borderRadius: 1, color: 'text.secondary', '&:hover': { color: 'error.main', bgcolor: '#FEF2F2' } }}
+            component="button"
+            onClick={(e) => { e.stopPropagation(); onDelete(app.id); }}
+            sx={{
+              border: 'none', bgcolor: 'transparent', cursor: 'pointer',
+              p: 0.5, borderRadius: 1, color: 'text.secondary', display: 'flex',
+              '&:hover': { color: 'error.main', bgcolor: '#FEF2F2' },
+            }}
           >
             <DeleteRoundedIcon sx={{ fontSize: 16 }} />
           </Box>
@@ -87,10 +95,13 @@ const AppCard: React.FC<CardProps> = ({ app, onEdit, onDelete, isDragging }) => 
       </Stack>
 
       {app.notes && (
-        <Typography variant="caption" color="text.secondary" sx={{
-          mt: 1, display: '-webkit-box', WebkitLineClamp: 2,
-          WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: 1.5,
-        }}>
+        <Typography
+          variant="caption" color="text.secondary"
+          sx={{
+            mt: 1, display: '-webkit-box', WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: 1.5,
+          }}
+        >
           {app.notes}
         </Typography>
       )}
@@ -98,7 +109,7 @@ const AppCard: React.FC<CardProps> = ({ app, onEdit, onDelete, isDragging }) => 
   );
 };
 
-// ── Column ────────────────────────────────────────────────────────────────────
+// ── Kanban Column ─────────────────────────────────────────────────────────────
 interface ColumnProps {
   colId: ApplicationStatus;
   label: string;
@@ -110,42 +121,50 @@ interface ColumnProps {
   onDelete: (id: string) => void;
 }
 
-const KanbanColumn: React.FC<ColumnProps> = ({ colId, label, color, bg, applications, onAdd, onEdit, onDelete }) => (
-  <Box sx={{
-    minWidth: { xs: '80vw', sm: 280 }, maxWidth: 320, flexShrink: 0,
-    bgcolor: bg, borderRadius: 3, p: 2,
-    display: 'flex', flexDirection: 'column', gap: 1.5,
-    border: `1px solid ${color}22`,
-    maxHeight: 'calc(100vh - 140px)', overflow: 'hidden',
-    flexGrow: 1,
-  }}>
-    {/* Header */}
+const KanbanColumn: React.FC<ColumnProps> = ({
+  colId, label, color, bg, applications, onAdd, onEdit, onDelete,
+}) => (
+  <Box
+    sx={{
+      minWidth: { xs: '80vw', sm: 280 }, maxWidth: 320,
+      flexShrink: 0, flexGrow: 1,
+      bgcolor: bg, borderRadius: 3, p: 2,
+      display: 'flex', flexDirection: 'column', gap: 1.5,
+      border: `1px solid ${color}22`,
+      maxHeight: 'calc(100vh - 148px)', overflow: 'hidden',
+    }}
+  >
     <Stack direction="row" alignItems="center" justifyContent="space-between">
       <Stack direction="row" alignItems="center" spacing={1}>
         <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: color }} />
-        <Typography fontWeight={700} fontSize="0.85rem" sx={{ color }}>
-          {label}
-        </Typography>
-        <Chip label={applications.length} size="small" sx={{ height: 20, fontSize: '0.7rem', fontWeight: 700, bgcolor: `${color}18`, color }} />
+        <Typography fontWeight={700} fontSize="0.85rem" sx={{ color }}>{label}</Typography>
+        <Chip
+          label={applications.length} size="small"
+          sx={{ height: 20, fontSize: '0.7rem', fontWeight: 700, bgcolor: `${color}18`, color }}
+        />
       </Stack>
       <Box
         component="button" onClick={() => onAdd(colId)}
-        sx={{ border: 'none', bgcolor: 'transparent', cursor: 'pointer', color, p: 0.5, borderRadius: 1, display: 'flex', '&:hover': { bgcolor: `${color}18` } }}
+        sx={{
+          border: 'none', bgcolor: 'transparent', cursor: 'pointer',
+          color, p: 0.5, borderRadius: 1, display: 'flex',
+          '&:hover': { bgcolor: `${color}18` },
+        }}
       >
         <AddRoundedIcon sx={{ fontSize: 18 }} />
       </Box>
     </Stack>
 
-    {/* Cards */}
     <Box sx={{ overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 1.5, pb: 0.5 }}>
       <SortableContext items={applications.map((a) => a.id)} strategy={verticalListSortingStrategy}>
         {applications.map((app) => (
           <AppCard key={app.id} app={app} onEdit={onEdit} onDelete={onDelete} />
         ))}
       </SortableContext>
+
       {applications.length === 0 && (
-        <Box sx={{ textAlign: 'center', py: 4, color: 'text.disabled' }}>
-          <BusinessRoundedIcon sx={{ fontSize: 32, mb: 1, opacity: 0.4 }} />
+        <Box sx={{ textAlign: 'center', py: 4 }}>
+          <BusinessRoundedIcon sx={{ fontSize: 32, color: 'text.disabled', mb: 1, opacity: 0.4 }} />
           <Typography variant="body2" color="text.disabled">No applications</Typography>
         </Box>
       )}
@@ -155,7 +174,11 @@ const KanbanColumn: React.FC<ColumnProps> = ({ colId, label, color, bg, applicat
 
 // ── Dashboard Page ────────────────────────────────────────────────────────────
 const DashboardPage: React.FC = () => {
-  const { applications, loading, error, createApplication, updateApplication, updateApplicationStatus, deleteApplication } = useApplications();
+  const {
+    applications, loading, error,
+    createApplication, updateApplication, updateApplicationStatus, deleteApplication,
+  } = useApplications();
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingApp, setEditingApp] = useState<Application | null>(null);
   const [defaultStatus, setDefaultStatus] = useState<ApplicationStatus>('Applied');
@@ -167,34 +190,49 @@ const DashboardPage: React.FC = () => {
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
   );
 
-  const filtered = useMemo(() =>
-    applications.filter((a) =>
-      !search || a.company.toLowerCase().includes(search.toLowerCase()) || a.role.toLowerCase().includes(search.toLowerCase())
-    ), [applications, search]
+  const filtered = useMemo(
+    () =>
+      applications.filter(
+        (a) =>
+          !search ||
+          a.company.toLowerCase().includes(search.toLowerCase()) ||
+          a.role.toLowerCase().includes(search.toLowerCase())
+      ),
+    [applications, search]
   );
 
-  const groupedByStatus = useMemo(() =>
-    COLUMNS.reduce<Record<ApplicationStatus, Application[]>>((acc, col) => {
-      acc[col.id] = filtered.filter((a) => a.status === col.id);
-      return acc;
-    }, {} as Record<ApplicationStatus, Application[]>),
+  const groupedByStatus = useMemo(
+    () =>
+      COLUMNS.reduce<Record<ApplicationStatus, Application[]>>(
+        (acc, col) => {
+          acc[col.id] = filtered.filter((a) => a.status === col.id);
+          return acc;
+        },
+        {} as Record<ApplicationStatus, Application[]>
+      ),
     [filtered]
   );
 
-  const handleDragStart = ({ active }: DragStartEvent) => setActiveId(active.id as string);
+  const handleDragStart = ({ active }: DragStartEvent) => {
+    setActiveId(active.id as string);
+  };
 
   const handleDragEnd = async ({ active, over }: DragEndEvent) => {
     setActiveId(null);
     if (!over) return;
+
     const app = applications.find((a) => a.id === active.id);
     if (!app) return;
 
-    const newStatus = COLUMNS.find((c) => c.id === over.id)?.id
-      ?? applications.find((a) => a.id === over.id)?.status;
+    // Dropped on a column header or another card — determine target status
+    const columnMatch = COLUMNS.find((c) => c.id === over.id);
+    const cardMatch = applications.find((a) => a.id === over.id);
+    const newStatus = columnMatch?.id ?? cardMatch?.status;
 
     if (newStatus && newStatus !== app.status) {
       try {
         await updateApplicationStatus(app.id, newStatus);
+        setSnackbar({ open: true, message: `Moved to ${newStatus}` });
       } catch {
         setSnackbar({ open: true, message: 'Failed to update status' });
       }
@@ -223,35 +261,59 @@ const DashboardPage: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Delete this application?')) return;
+    if (!window.confirm('Delete this application?')) return;
     await deleteApplication(id);
     setSnackbar({ open: true, message: 'Application deleted' });
   };
 
-  const activeApp = activeId ? applications.find((a) => a.id === activeId) : null;
+  const activeApp = activeId ? applications.find((a) => a.id === activeId) ?? null : null;
 
-  if (loading) return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
-      <CircularProgress />
-    </Box>
-  );
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-      {/* Header */}
-      <Box sx={{ px: 3, py: 2.5, bgcolor: 'background.paper', borderBottom: '1px solid', borderColor: 'divider', flexShrink: 0 }}>
-        <Stack direction={{ xs: 'column', sm: 'row' }} alignItems={{ sm: 'center' }} justifyContent="space-between" spacing={2}>
+      {/* Page Header */}
+      <Box
+        sx={{
+          px: 3, py: 2.5, bgcolor: 'background.paper',
+          borderBottom: '1px solid', borderColor: 'divider', flexShrink: 0,
+        }}
+      >
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          alignItems={{ sm: 'center' }}
+          justifyContent="space-between"
+          spacing={2}
+        >
           <Box>
             <Typography variant="h5" fontWeight={800}>Job Board</Typography>
-            <Typography variant="body2" color="text.secondary">{applications.length} applications tracked</Typography>
+            <Typography variant="body2" color="text.secondary">
+              {applications.length} application{applications.length !== 1 ? 's' : ''} tracked
+            </Typography>
           </Box>
           <Stack direction="row" spacing={1.5} alignItems="center">
             <TextField
-              size="small" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)}
-              InputProps={{ startAdornment: <InputAdornment position="start"><SearchRoundedIcon fontSize="small" color="action" /></InputAdornment> }}
+              size="small" placeholder="Search..." value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchRoundedIcon fontSize="small" color="action" />
+                  </InputAdornment>
+                ),
+              }}
               sx={{ width: 220 }}
             />
-            <Button variant="contained" startIcon={<AddRoundedIcon />} onClick={() => handleAdd('Applied')}>
+            <Button
+              variant="contained" startIcon={<AddRoundedIcon />}
+              onClick={() => handleAdd('Applied')}
+            >
               Add Application
             </Button>
           </Stack>
@@ -283,6 +345,7 @@ const DashboardPage: React.FC = () => {
               />
             ))}
           </Stack>
+
           <DragOverlay>
             {activeApp && (
               <Box sx={{ opacity: 0.9, transform: 'rotate(2deg)', boxShadow: 6, borderRadius: 2 }}>
@@ -293,13 +356,20 @@ const DashboardPage: React.FC = () => {
         </DndContext>
       </Box>
 
+      {/* Add / Edit Dialog */}
       <ApplicationFormDialog
-        open={dialogOpen} onClose={() => setDialogOpen(false)}
-        onSubmit={handleSubmit} initialData={editingApp} defaultStatus={defaultStatus}
+        open={dialogOpen}
+        onClose={() => { setDialogOpen(false); setEditingApp(null); }}
+        onSubmit={handleSubmit}
+        initialData={editingApp}
+        defaultStatus={defaultStatus}
       />
 
-      <Snackbar open={snackbar.open} message={snackbar.message}
-        autoHideDuration={3000} onClose={() => setSnackbar({ ...snackbar, open: false })}
+      <Snackbar
+        open={snackbar.open}
+        message={snackbar.message}
+        autoHideDuration={3000}
+        onClose={() => setSnackbar((s) => ({ ...s, open: false }))}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       />
     </Box>

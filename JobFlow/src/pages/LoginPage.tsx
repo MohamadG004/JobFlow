@@ -35,19 +35,26 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <Box sx={{
-      minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-      bgcolor: '#F8FAFC', p: 2,
-      background: 'radial-gradient(ellipse at 60% 0%, #EFF6FF 0%, #F8FAFC 60%)',
-    }}>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        p: 2,
+        background: 'radial-gradient(ellipse at 60% 0%, #EFF6FF 0%, #F8FAFC 60%)',
+      }}
+    >
       <Card sx={{ width: '100%', maxWidth: 440, p: { xs: 3, sm: 4 }, borderRadius: 4 }}>
         {/* Logo */}
         <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mb: 4 }}>
-          <Box sx={{
-            width: 40, height: 40, borderRadius: 2,
-            background: 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
+          <Box
+            sx={{
+              width: 40, height: 40, borderRadius: 2,
+              background: 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
+          >
             <WorkRoundedIcon sx={{ color: 'white', fontSize: 22 }} />
           </Box>
           <Typography variant="h5" fontWeight={800} sx={{ letterSpacing: '-0.02em' }}>
@@ -58,20 +65,32 @@ const LoginPage: React.FC = () => {
         <Typography variant="h5" fontWeight={700} sx={{ mb: 0.5 }}>Welcome back</Typography>
         <Typography color="text.secondary" sx={{ mb: 3 }}>Sign in to your account</Typography>
 
-        {error && <Alert severity="error" sx={{ mb: 2, borderRadius: 2 }}>{error}</Alert>}
+        {error && (
+          <Alert severity="error" sx={{ mb: 2, borderRadius: 2 }}>{error}</Alert>
+        )}
 
         <form onSubmit={handleSubmit}>
           <Stack spacing={2.5}>
             <TextField
               label="Email address" type="email" fullWidth required
               value={email} onChange={(e) => setEmail(e.target.value)}
-              InputProps={{ startAdornment: <InputAdornment position="start"><EmailRoundedIcon fontSize="small" color="action" /></InputAdornment> }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <EmailRoundedIcon fontSize="small" color="action" />
+                  </InputAdornment>
+                ),
+              }}
             />
             <TextField
               label="Password" type={showPassword ? 'text' : 'password'} fullWidth required
               value={password} onChange={(e) => setPassword(e.target.value)}
               InputProps={{
-                startAdornment: <InputAdornment position="start"><LockRoundedIcon fontSize="small" color="action" /></InputAdornment>,
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LockRoundedIcon fontSize="small" color="action" />
+                  </InputAdornment>
+                ),
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton onClick={() => setShowPassword(!showPassword)} size="small">
@@ -97,8 +116,10 @@ const LoginPage: React.FC = () => {
         <Divider sx={{ my: 3 }} />
 
         <Typography align="center" color="text.secondary" variant="body2">
-          Don't have an account?{' '}
-          <Link component={RouterLink} to="/register" fontWeight={600}>Create one</Link>
+          Don&apos;t have an account?{' '}
+          <Link component={RouterLink} to="/register" fontWeight={600}>
+            Create one
+          </Link>
         </Typography>
       </Card>
     </Box>

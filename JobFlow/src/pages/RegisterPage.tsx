@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import {
   Box, Card, TextField, Button, Typography, Link,
   Alert, Stack, Divider, InputAdornment,
@@ -11,7 +11,6 @@ import { useAuth } from '@/context/AuthContext';
 
 const RegisterPage: React.FC = () => {
   const { signUp } = useAuth();
-  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -23,7 +22,8 @@ const RegisterPage: React.FC = () => {
     e.preventDefault();
     if (password !== confirm) { setError('Passwords do not match'); return; }
     if (password.length < 8) { setError('Password must be at least 8 characters'); return; }
-    setError(''); setLoading(true);
+    setError('');
+    setLoading(true);
     try {
       await signUp(email, password);
       setSuccess(true);
@@ -36,31 +36,48 @@ const RegisterPage: React.FC = () => {
 
   if (success) {
     return (
-      <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: '#F8FAFC', p: 2 }}>
+      <Box
+        sx={{
+          minHeight: '100vh', display: 'flex', alignItems: 'center',
+          justifyContent: 'center', bgcolor: '#F8FAFC', p: 2,
+        }}
+      >
         <Card sx={{ maxWidth: 440, width: '100%', p: 4, borderRadius: 4, textAlign: 'center' }}>
           <Typography variant="h2" sx={{ mb: 2 }}>📬</Typography>
           <Typography variant="h5" fontWeight={700} sx={{ mb: 1 }}>Check your email</Typography>
           <Typography color="text.secondary" sx={{ mb: 3 }}>
             We sent a confirmation link to <strong>{email}</strong>. Click it to activate your account.
           </Typography>
-          <Button component={RouterLink} to="/login" variant="contained" fullWidth>Back to Login</Button>
+          <Button component={RouterLink} to="/login" variant="contained" fullWidth>
+            Back to Login
+          </Button>
         </Card>
       </Box>
     );
   }
 
   return (
-    <Box sx={{
-      minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-      bgcolor: '#F8FAFC', p: 2,
-      background: 'radial-gradient(ellipse at 40% 0%, #F5F3FF 0%, #F8FAFC 60%)',
-    }}>
+    <Box
+      sx={{
+        minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        p: 2,
+        background: 'radial-gradient(ellipse at 40% 0%, #F5F3FF 0%, #F8FAFC 60%)',
+      }}
+    >
       <Card sx={{ width: '100%', maxWidth: 440, p: { xs: 3, sm: 4 }, borderRadius: 4 }}>
         <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mb: 4 }}>
-          <Box sx={{ width: 40, height: 40, borderRadius: 2, background: 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Box
+            sx={{
+              width: 40, height: 40, borderRadius: 2,
+              background: 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
+          >
             <WorkRoundedIcon sx={{ color: 'white', fontSize: 22 }} />
           </Box>
-          <Typography variant="h5" fontWeight={800} sx={{ letterSpacing: '-0.02em' }}>JobFlow</Typography>
+          <Typography variant="h5" fontWeight={800} sx={{ letterSpacing: '-0.02em' }}>
+            JobFlow
+          </Typography>
         </Stack>
 
         <Typography variant="h5" fontWeight={700} sx={{ mb: 0.5 }}>Create your account</Typography>
@@ -70,13 +87,40 @@ const RegisterPage: React.FC = () => {
 
         <form onSubmit={handleSubmit}>
           <Stack spacing={2.5}>
-            <TextField label="Email address" type="email" fullWidth required value={email} onChange={(e) => setEmail(e.target.value)}
-              InputProps={{ startAdornment: <InputAdornment position="start"><EmailRoundedIcon fontSize="small" color="action" /></InputAdornment> }} />
-            <TextField label="Password" type="password" fullWidth required value={password} onChange={(e) => setPassword(e.target.value)}
+            <TextField
+              label="Email address" type="email" fullWidth required
+              value={email} onChange={(e) => setEmail(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <EmailRoundedIcon fontSize="small" color="action" />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <TextField
+              label="Password" type="password" fullWidth required
+              value={password} onChange={(e) => setPassword(e.target.value)}
               helperText="Minimum 8 characters"
-              InputProps={{ startAdornment: <InputAdornment position="start"><LockRoundedIcon fontSize="small" color="action" /></InputAdornment> }} />
-            <TextField label="Confirm password" type="password" fullWidth required value={confirm} onChange={(e) => setConfirm(e.target.value)}
-              InputProps={{ startAdornment: <InputAdornment position="start"><LockRoundedIcon fontSize="small" color="action" /></InputAdornment> }} />
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LockRoundedIcon fontSize="small" color="action" />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <TextField
+              label="Confirm password" type="password" fullWidth required
+              value={confirm} onChange={(e) => setConfirm(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LockRoundedIcon fontSize="small" color="action" />
+                  </InputAdornment>
+                ),
+              }}
+            />
             <Button type="submit" variant="contained" size="large" fullWidth disabled={loading}>
               {loading ? 'Creating account...' : 'Create account'}
             </Button>
