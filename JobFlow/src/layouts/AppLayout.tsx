@@ -31,7 +31,7 @@ const AppLayout: React.FC = () => {
 
   const handleSignOut = async () => {
     await signOut();
-    navigate('/login');
+    navigate('/');
   };
 
   const drawerContent = (
