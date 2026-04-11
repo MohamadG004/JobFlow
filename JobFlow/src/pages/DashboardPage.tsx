@@ -11,9 +11,13 @@ import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
 import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
 import {
   DndContext, DragEndEvent, PointerSensor, useSensor, useSensors,
-  DragOverlay, DragStartEvent, closestCorners,
+  DragOverlay, DragStartEvent, DragOverEvent, closestCorners,
 } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
+import {
+  SortableContext, verticalListSortingStrategy,
+  useSortable, arrayMove,
+} from '@dnd-kit/sortable';
+import { useDroppable } from '@dnd-kit/core';   // ← NEW
 import { CSS } from '@dnd-kit/utilities';
 import { useApplications } from '@/hooks/useApplications';
 import ApplicationFormDialog from '@/components/board/ApplicationFormDialog';
@@ -39,6 +43,7 @@ const AppCard: React.FC<CardProps> = ({ app, onEdit, onDelete }) => {
   const col = COLUMNS.find((c) => c.id === app.status)!;
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: app.id,
+    data: { status: app.status },   // ← expose status so onDragOver can read it
   });
 
   return (
@@ -123,61 +128,74 @@ interface ColumnProps {
 
 const KanbanColumn: React.FC<ColumnProps> = ({
   colId, label, color, bg, applications, onAdd, onEdit, onDelete,
-}) => (
-  <Box
-    sx={{
-      minWidth: { xs: '80vw', sm: 280 }, maxWidth: 320,
-      flexShrink: 0, flexGrow: 1,
-      bgcolor: bg, borderRadius: 3, p: 2,
-      display: 'flex', flexDirection: 'column', gap: 1.5,
-      border: `1px solid ${color}22`,
-      maxHeight: 'calc(100vh - 148px)', overflow: 'hidden',
-    }}
-  >
-    <Stack direction="row" alignItems="center" justifyContent="space-between">
-      <Stack direction="row" alignItems="center" spacing={1}>
-        <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: color }} />
-        <Typography fontWeight={700} fontSize="0.85rem" sx={{ color }}>{label}</Typography>
-        <Chip
-          label={applications.length} size="small"
-          sx={{ height: 20, fontSize: '0.7rem', fontWeight: 700, bgcolor: `${color}18`, color }}
-        />
-      </Stack>
-      <Box
-        component="button" onClick={() => onAdd(colId)}
-        sx={{
-          border: 'none', bgcolor: 'transparent', cursor: 'pointer',
-          color, p: 0.5, borderRadius: 1, display: 'flex',
-          '&:hover': { bgcolor: `${color}18` },
-        }}
-      >
-        <AddRoundedIcon sx={{ fontSize: 18 }} />
-      </Box>
-    </Stack>
+}) => {
+  // Make the column itself a drop target so cards can be dropped into empty columns
+  const { setNodeRef } = useDroppable({ id: colId });
 
-    <Box sx={{ overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 1.5, pb: 0.5 }}>
-      <SortableContext items={applications.map((a) => a.id)} strategy={verticalListSortingStrategy}>
-        {applications.map((app) => (
-          <AppCard key={app.id} app={app} onEdit={onEdit} onDelete={onDelete} />
-        ))}
-      </SortableContext>
-
-      {applications.length === 0 && (
-        <Box sx={{ textAlign: 'center', py: 4 }}>
-          <BusinessRoundedIcon sx={{ fontSize: 32, color: 'text.disabled', mb: 1, opacity: 0.4 }} />
-          <Typography variant="body2" color="text.disabled">No applications</Typography>
+  return (
+    <Box
+      sx={{
+        minWidth: { xs: '80vw', sm: 280 }, maxWidth: 320,
+        flexShrink: 0, flexGrow: 1,
+        bgcolor: bg, borderRadius: 3, p: 2,
+        display: 'flex', flexDirection: 'column', gap: 1.5,
+        border: `1px solid ${color}22`,
+        maxHeight: 'calc(100vh - 148px)', overflow: 'hidden',
+      }}
+    >
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Stack direction="row" alignItems="center" spacing={1}>
+          <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: color }} />
+          <Typography fontWeight={700} fontSize="0.85rem" sx={{ color }}>{label}</Typography>
+          <Chip
+            label={applications.length} size="small"
+            sx={{ height: 20, fontSize: '0.7rem', fontWeight: 700, bgcolor: `${color}18`, color }}
+          />
+        </Stack>
+        <Box
+          component="button" onClick={() => onAdd(colId)}
+          sx={{
+            border: 'none', bgcolor: 'transparent', cursor: 'pointer',
+            color, p: 0.5, borderRadius: 1, display: 'flex',
+            '&:hover': { bgcolor: `${color}18` },
+          }}
+        >
+          <AddRoundedIcon sx={{ fontSize: 18 }} />
         </Box>
-      )}
-    </Box>
-  </Box>
-);
+      </Stack>
 
-// ── Dashboard Page ────────────────────────────────────────────────────────────
+      {/* ← ref goes on the scrollable card list so the whole column area is droppable */}
+      <Box
+        ref={setNodeRef}
+        sx={{ overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 1.5, pb: 0.5, flex: 1 }}
+      >
+        <SortableContext items={applications.map((a) => a.id)} strategy={verticalListSortingStrategy}>
+          {applications.map((app) => (
+            <AppCard key={app.id} app={app} onEdit={onEdit} onDelete={onDelete} />
+          ))}
+        </SortableContext>
+
+        {applications.length === 0 && (
+          <Box sx={{ textAlign: 'center', py: 4 }}>
+            <BusinessRoundedIcon sx={{ fontSize: 32, color: 'text.disabled', mb: 1, opacity: 0.4 }} />
+            <Typography variant="body2" color="text.disabled">No applications</Typography>
+          </Box>
+        )}
+      </Box>
+    </Box>
+  );
+};
+
+// ── Dashboard Page ───────────────────────────────────────────────────────────
 const DashboardPage: React.FC = () => {
   const {
     applications, loading, error,
     createApplication, updateApplication, updateApplicationStatus, deleteApplication,
   } = useApplications();
+
+  // ── Local optimistic state for drag ordering ──────────────────────────────
+  const [localApps, setLocalApps] = useState<Application[] | null>(null);
+  const displayApps = localApps ?? applications;
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingApp, setEditingApp] = useState<Application | null>(null);
@@ -192,13 +210,13 @@ const DashboardPage: React.FC = () => {
 
   const filtered = useMemo(
     () =>
-      applications.filter(
+      displayApps.filter(
         (a) =>
           !search ||
           a.company.toLowerCase().includes(search.toLowerCase()) ||
           a.role.toLowerCase().includes(search.toLowerCase())
       ),
-    [applications, search]
+    [displayApps, search]
   );
 
   const groupedByStatus = useMemo(
@@ -213,30 +231,96 @@ const DashboardPage: React.FC = () => {
     [filtered]
   );
 
+  // ── Helpers ───────────────────────────────────────────────────────────────
+  const getColumnOfItem = (id: string): ApplicationStatus | null => {
+    const col = COLUMNS.find((c) => c.id === id);
+    if (col) return col.id;
+    const app = displayApps.find((a) => a.id === id);
+    return app?.status ?? null;
+  };
+
+  // ── Drag handlers ─────────────────────────────────────────────────────────
   const handleDragStart = ({ active }: DragStartEvent) => {
     setActiveId(active.id as string);
+    // Initialise local state from server state when drag begins
+    setLocalApps(applications);
+  };
+
+  const handleDragOver = ({ active, over }: DragOverEvent) => {
+    if (!over) return;
+
+    const activeId = active.id as string;
+    const overId = over.id as string;
+    if (activeId === overId) return;
+
+    const activeStatus = getColumnOfItem(activeId);
+    const overStatus = getColumnOfItem(overId);
+    if (!activeStatus || !overStatus) return;
+
+    setLocalApps((prev) => {
+      const apps = prev ?? applications;
+
+      if (activeStatus === overStatus) {
+        // ── Same-column reorder ──────────────────────────────────────────────
+        const colApps = apps.filter((a) => a.status === activeStatus);
+        const oldIndex = colApps.findIndex((a) => a.id === activeId);
+        const newIndex = colApps.findIndex((a) => a.id === overId);
+        if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) return apps;
+
+        const reordered = arrayMove(colApps, oldIndex, newIndex);
+        // Rebuild full list preserving order of other columns
+        return apps
+          .filter((a) => a.status !== activeStatus)
+          .concat(reordered);
+      } else {
+        // ── Cross-column move ────────────────────────────────────────────────
+        const activeApp = apps.find((a) => a.id === activeId);
+        if (!activeApp) return apps;
+
+        const updatedActive = { ...activeApp, status: overStatus };
+
+        // Insert after the card we're hovering, or at the end of the column
+        const overIsColumn = COLUMNS.some((c) => c.id === overId);
+        let newApps = apps.filter((a) => a.id !== activeId);
+
+        if (overIsColumn) {
+          newApps = [...newApps, updatedActive];
+        } else {
+          const overIndex = newApps.findIndex((a) => a.id === overId);
+          newApps.splice(overIndex + 1, 0, updatedActive);
+        }
+        return newApps;
+      }
+    });
   };
 
   const handleDragEnd = async ({ active, over }: DragEndEvent) => {
     setActiveId(null);
-    if (!over) return;
 
-    const app = applications.find((a) => a.id === active.id);
-    if (!app) return;
+    if (!over) {
+      setLocalApps(null);   // abort — revert to server state
+      return;
+    }
 
-    // Dropped on a column header or another card — determine target status
-    const columnMatch = COLUMNS.find((c) => c.id === over.id);
-    const cardMatch = applications.find((a) => a.id === over.id);
-    const newStatus = columnMatch?.id ?? cardMatch?.status;
+    const activeApp = applications.find((a) => a.id === active.id);
+    if (!activeApp) { setLocalApps(null); return; }
 
-    if (newStatus && newStatus !== app.status) {
+    const newStatus = getColumnOfItem(over.id as string);
+    if (!newStatus) { setLocalApps(null); return; }
+
+    if (newStatus !== activeApp.status) {
       try {
-        await updateApplicationStatus(app.id, newStatus);
+        await updateApplicationStatus(activeApp.id, newStatus);
         setSnackbar({ open: true, message: `Moved to ${newStatus}` });
       } catch {
+        setLocalApps(null);   // revert on failure
         setSnackbar({ open: true, message: 'Failed to update status' });
+        return;
       }
     }
+
+    // Persist the local order as the new source of truth (clear so server re-syncs)
+    setLocalApps(null);
   };
 
   const handleAdd = (status: ApplicationStatus) => {
@@ -266,7 +350,7 @@ const DashboardPage: React.FC = () => {
     setSnackbar({ open: true, message: 'Application deleted' });
   };
 
-  const activeApp = activeId ? applications.find((a) => a.id === activeId) ?? null : null;
+  const activeApp = activeId ? displayApps.find((a) => a.id === activeId) ?? null : null;
 
   if (loading) {
     return (
@@ -328,6 +412,7 @@ const DashboardPage: React.FC = () => {
           sensors={sensors}
           collisionDetection={closestCorners}
           onDragStart={handleDragStart}
+          onDragOver={handleDragOver}    // ← NEW
           onDragEnd={handleDragEnd}
         >
           <Stack direction="row" spacing={2} sx={{ minHeight: '100%', alignItems: 'flex-start' }}>
