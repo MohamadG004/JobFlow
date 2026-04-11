@@ -37,7 +37,10 @@ const AppLayout: React.FC = () => {
   const drawerContent = (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       {/* Logo */}
-      <Box sx={{ px: 3, py: 2.5, display: 'flex', alignItems: 'center', gap: 1.5 }}>
+      <Box
+        onClick={handleSignOut}
+        sx={{ px: 3, py: 2.5, display: 'flex', alignItems: 'center', gap: 1.5, cursor: 'pointer', borderRadius: 1, '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.04) } }}
+      >
         <Box
           sx={{
             width: 36, height: 36, borderRadius: 2,
@@ -152,7 +155,10 @@ const AppLayout: React.FC = () => {
             <IconButton onClick={() => setMobileOpen(true)} edge="start">
               <MenuRoundedIcon />
             </IconButton>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 1 }}>
+            <Box
+              onClick={handleSignOut}
+              sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 1, cursor: 'pointer', px: 1, py: 0.5, borderRadius: 1, '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.04) } }}
+            >
               <WorkRoundedIcon sx={{ color: 'primary.main' }} />
               <Typography variant="h6" sx={{ fontWeight: 800 }}>JobFlow</Typography>
             </Box>

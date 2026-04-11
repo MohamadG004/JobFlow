@@ -47,7 +47,13 @@ const LoginPage: React.FC = () => {
     >
       <Card sx={{ width: '100%', maxWidth: 440, p: { xs: 3, sm: 4 }, borderRadius: 4 }}>
         {/* Logo */}
-        <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mb: 4 }}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing={1.5}
+          onClick={() => navigate('/')}
+          sx={{ mb: 4, cursor: 'pointer', px: 1, py: 0.5, borderRadius: 1, '&:hover': { bgcolor: 'action.hover' } }}
+        >
           <Box
             sx={{
               width: 40, height: 40, borderRadius: 2,
