@@ -1,12 +1,77 @@
 import React, { useState } from 'react';
 import {
   Box, Typography, Card, CardContent, Stack,
-  TextField, Button, Alert, Avatar,
+  TextField, Button, Alert,
 } from '@mui/material';
+import LockRoundedIcon from '@mui/icons-material/LockRounded';
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import ShieldRoundedIcon from '@mui/icons-material/ShieldRounded';
 import { useAuth } from '@/context/AuthContext';
 import { authService } from '@/services/authService';
 import { useNavigate } from 'react-router-dom';
 
+// ── Avatar ────────────────────────────────────────────────────────────────────
+const UserAvatar: React.FC<{ initial: string }> = ({ initial }) => (
+  <Box
+    sx={{
+      width: 52, height: 52, borderRadius: '14px', flexShrink: 0,
+      background: 'linear-gradient(135deg, #2D52E0 0%, #7C3AED 100%)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      boxShadow: '0 3px 10px rgba(45,82,224,0.30)',
+    }}
+  >
+    <Typography sx={{ fontFamily: '"Sora", sans-serif', fontWeight: 800, fontSize: '1.25rem', color: '#fff', lineHeight: 1 }}>
+      {initial}
+    </Typography>
+  </Box>
+);
+
+// ── Section Card ──────────────────────────────────────────────────────────────
+const SectionCard: React.FC<{
+  title: string;
+  subtitle?: string;
+  icon?: React.ReactNode;
+  children: React.ReactNode;
+  danger?: boolean;
+}> = ({ title, subtitle, icon, children, danger }) => (
+  <Card
+    sx={{
+      border: danger ? '1px solid #FECACA' : '1px solid #EEECE8',
+      bgcolor: danger ? '#FFFAFA' : '#fff',
+    }}
+  >
+    <CardContent sx={{ p: { xs: 3, sm: 3.5 } }}>
+      <Stack direction="row" spacing={1.5} alignItems="flex-start" sx={{ mb: 3 }}>
+        {icon && (
+          <Box
+            sx={{
+              width: 34, height: 34, borderRadius: '9px', flexShrink: 0,
+              bgcolor: danger ? '#FEF2F2' : '#F0F4FF',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
+          >
+            <Box sx={{ color: danger ? '#DC2626' : '#2D52E0', display: 'flex', fontSize: '1rem' }}>
+              {icon}
+            </Box>
+          </Box>
+        )}
+        <Box>
+          <Typography sx={{ fontFamily: '"Sora", sans-serif', fontWeight: 700, fontSize: '0.9375rem', color: danger ? '#B91C1C' : '#0D0F17', lineHeight: 1.3 }}>
+            {title}
+          </Typography>
+          {subtitle && (
+            <Typography sx={{ fontSize: '0.8125rem', color: '#6B7180', mt: 0.25 }}>
+              {subtitle}
+            </Typography>
+          )}
+        </Box>
+      </Stack>
+      {children}
+    </CardContent>
+  </Card>
+);
+
+// ── Profile Page ──────────────────────────────────────────────────────────────
 const ProfilePage: React.FC = () => {
   const { user, guestMode, signOut } = useAuth();
   const navigate = useNavigate();
@@ -44,78 +109,121 @@ const ProfilePage: React.FC = () => {
     navigate('/login');
   };
 
-  return (
-    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 640 }}>
-      <Typography variant="h5" fontWeight={800} sx={{ mb: 0.5 }}>
-        Profile &amp; Settings
-      </Typography>
-      <Typography color="text.secondary" sx={{ mb: 4 }}>
-        Manage your account details
-      </Typography>
+  const initial = (user?.username?.[0] || user?.email?.[0] || '?').toUpperCase();
 
-      {/* Account info */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
-          <Typography fontWeight={700} sx={{ mb: 2.5 }}>Account</Typography>
+  return (
+    <Box sx={{ p: { xs: 2.5, md: 4 }, maxWidth: 580 }}>
+      {/* Page header */}
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h5" sx={{ fontFamily: '"Sora", sans-serif', fontWeight: 800, letterSpacing: '-0.02em', mb: 0.5 }}>
+          Profile &amp; Settings
+        </Typography>
+        <Typography sx={{ color: '#6B7180', fontSize: '0.9rem' }}>
+          Manage your account and preferences
+        </Typography>
+      </Box>
+
+      <Stack spacing={2.5}>
+        {/* Account info */}
+        <SectionCard title="Account" subtitle="Your profile information">
           <Stack direction="row" spacing={2} alignItems="center">
-            <Avatar
-              sx={{
-                width: 56, height: 56, fontWeight: 700, fontSize: '1.2rem',
-                background: 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)',
-              }}
-            >
-              {(user?.username?.[0] || user?.email?.[0] || '').toUpperCase()}
-            </Avatar>
-            <Box>
-              <Typography fontWeight={600}>{user?.username || user?.email}</Typography>
-              <Typography variant="body2" color="text.secondary">{user?.email}</Typography>
+            <UserAvatar initial={initial} />
+            <Box sx={{ minWidth: 0 }}>
+              <Typography sx={{ fontWeight: 700, fontSize: '0.9375rem', color: '#0D0F17', mb: 0.25 }}>
+                {user?.username || user?.email}
+              </Typography>
+              <Typography sx={{ fontSize: '0.8125rem', color: '#6B7180' }}>
+                {user?.email}
+              </Typography>
+              {guestMode && (
+                <Box
+                  sx={{
+                    display: 'inline-flex', alignItems: 'center',
+                    mt: 0.75, px: 1, py: 0.35,
+                    bgcolor: '#FFFBEB', border: '1px solid #FDE68A',
+                    borderRadius: '6px',
+                  }}
+                >
+                  <Typography sx={{ fontSize: '0.72rem', fontWeight: 600, color: '#92400E' }}>
+                    Guest session
+                  </Typography>
+                </Box>
+              )}
             </Box>
           </Stack>
-        </CardContent>
-      </Card>
+        </SectionCard>
 
-      {/* Change password - only show for non-guest users */}
-      {!guestMode && (
-        <Card sx={{ mb: 3 }}>
-          <CardContent>
-            <Typography fontWeight={700} sx={{ mb: 2.5 }}>Change Password</Typography>
+        {/* Change password */}
+        {!guestMode && (
+          <SectionCard
+            title="Change Password"
+            subtitle="Update your login credentials"
+            icon={<LockRoundedIcon sx={{ fontSize: 17 }} />}
+          >
             {msg && (
-              <Alert severity={msg.type} sx={{ mb: 2, borderRadius: 2 }}>{msg.text}</Alert>
+              <Alert severity={msg.type} sx={{ mb: 2.5 }}>{msg.text}</Alert>
             )}
-            <form onSubmit={handlePasswordUpdate}>
+            <Box component="form" onSubmit={handlePasswordUpdate}>
               <Stack spacing={2.5}>
                 <TextField
-                  label="New password" type="password" fullWidth required
-                  value={password} onChange={(e) => setPassword(e.target.value)}
+                  label="New password"
+                  type="password"
+                  fullWidth
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   helperText="Minimum 8 characters"
+                  autoComplete="new-password"
                 />
                 <TextField
-                  label="Confirm new password" type="password" fullWidth required
-                  value={confirm} onChange={(e) => setConfirm(e.target.value)}
+                  label="Confirm new password"
+                  type="password"
+                  fullWidth
+                  required
+                  value={confirm}
+                  onChange={(e) => setConfirm(e.target.value)}
+                  autoComplete="new-password"
                 />
-                <Button
-                  type="submit" variant="contained" disabled={loading}
-                  sx={{ alignSelf: 'flex-start' }}
-                >
-                  {loading ? 'Updating...' : 'Update Password'}
-                </Button>
+                <Box>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    disabled={loading}
+                    startIcon={<ShieldRoundedIcon sx={{ fontSize: '1rem !important' }} />}
+                  >
+                    {loading ? 'Updating…' : 'Update password'}
+                  </Button>
+                </Box>
               </Stack>
-            </form>
-          </CardContent>
-        </Card>
-      )}
+            </Box>
+          </SectionCard>
+        )}
 
-      {/* Sign Out Button */}
-      <Card sx={{ border: '1px solid', borderColor: 'error.light' }}>
-        <CardContent>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            Sign out of your account on this device.
-          </Typography>
-          <Button variant="outlined" color="error" onClick={handleSignOut}>
-            Sign Out
+        {/* Sign Out */}
+        <SectionCard
+          title="Sign out"
+          subtitle="Sign out of this device"
+          icon={<LogoutRoundedIcon sx={{ fontSize: 17 }} />}
+          danger
+        >
+          <Button
+            variant="outlined"
+            color="error"
+            startIcon={<LogoutRoundedIcon sx={{ fontSize: '0.95rem !important' }} />}
+            onClick={handleSignOut}
+            sx={{
+              borderColor: '#FECACA',
+              color: '#B91C1C',
+              '&:hover': {
+                borderColor: '#DC2626',
+                bgcolor: '#FEF2F2',
+              },
+            }}
+          >
+            Sign out
           </Button>
-        </CardContent>
-      </Card>
+        </SectionCard>
+      </Stack>
     </Box>
   );
 };
