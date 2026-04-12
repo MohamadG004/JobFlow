@@ -197,7 +197,6 @@ const RegisterPage: React.FC = () => {
           }}
         >
           <Box sx={{ width: 32, height: 32, borderRadius: '8px', background: 'linear-gradient(135deg, #2D52E0 0%, #7C3AED 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Box component="span" sx={{ color: '#fff', fontFamily: '"Sora",sans-serif', fontWeight: 800, fontSize: '0.875rem', lineHeight: 1 }}>J</Box>
           </Box>
           <Typography sx={{ fontFamily: '"Sora", sans-serif', fontWeight: 800, fontSize: '1rem', color: '#0D0F17', letterSpacing: '-0.02em' }}>
             JobFlow
@@ -210,7 +209,7 @@ const RegisterPage: React.FC = () => {
               Create your account
             </Typography>
             <Typography sx={{ color: '#6B7180', fontSize: '0.9375rem' }}>
-              Start tracking your job search today — it&apos;s free.
+              Start tracking your job search today. It&apos;s free!
             </Typography>
           </Box>
 

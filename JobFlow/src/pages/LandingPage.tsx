@@ -229,7 +229,7 @@ const LandingPage: React.FC = () => {
                   maxWidth: 460,
                 }}
               >
-                A beautiful kanban board for your job hunt. Add applications, drag them through stages, and stay on top of every opportunity — with or without an account.
+                A beautiful kanban board for your job hunt. Add applications, drag them through stages, and stay on top of every opportunity with or without an account.
               </Typography>
 
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ xs: 'flex-start' }}>
@@ -273,7 +273,7 @@ const LandingPage: React.FC = () => {
               </Stack>
 
               <Typography sx={{ fontSize: '0.78rem', color: '#9CA3AF' }}>
-                Guest sessions are temporary — sign up to save your data.
+                Guest sessions are temporary. Sign up to save your data.
               </Typography>
             </Stack>
           </Grid>
