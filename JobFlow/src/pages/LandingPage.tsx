@@ -110,7 +110,7 @@ const LandingPage: React.FC = () => {
                       What you can do
                     </Typography>
                     <Typography color="text.secondary">
-                      Browse your applications, update status with drag-and-drop, and review analytics without creating an account.
+                      Browse your applications, update status with drag-and-drop, and review analytics!
                     </Typography>
                   </Box>
 
