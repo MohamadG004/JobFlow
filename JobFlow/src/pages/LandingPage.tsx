@@ -9,6 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+import WorkRoundedIcon from '@mui/icons-material/WorkRounded';
 import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
 import LoginRoundedIcon from '@mui/icons-material/LoginRounded';
 import PreviewRoundedIcon from '@mui/icons-material/PreviewRounded';
@@ -122,13 +123,13 @@ const LandingPage: React.FC = () => {
         <Stack direction="row" alignItems="center" spacing={1.25}>
           <Box
             sx={{
-              width: 32, height: 32, borderRadius: '8px',
-              background: 'linear-gradient(135deg, #2D52E0 0%, #7C3AED 100%)',
+              width: 36, height: 36, borderRadius: 2,
+              background: 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               boxShadow: '0 2px 8px rgba(45,82,224,0.30)',
             }}
           >
-            <Box component="span" sx={{ color: '#fff', fontSize: '0.9rem', fontWeight: 800, fontFamily: '"Sora",sans-serif', lineHeight: 1 }}>J</Box>
+            <WorkRoundedIcon sx={{ color: 'white', fontSize: 20 }} />
           </Box>
           <Typography sx={{ fontFamily: '"Sora", sans-serif', fontWeight: 800, fontSize: '1rem', letterSpacing: '-0.03em', color: '#0D0F17' }}>
             JobFlow
@@ -377,7 +378,7 @@ const LandingPage: React.FC = () => {
               >
                 <Typography sx={{ fontSize: '0.68rem', color: '#9CA3AF', fontWeight: 500 }}>Interview rate</Typography>
                 <Typography sx={{ fontFamily: '"Sora",sans-serif', fontWeight: 800, fontSize: '1.25rem', color: '#0D0F17', lineHeight: 1.2 }}>
-                  68%
+                  72%
                   <Box component="span" sx={{ fontSize: '0.75rem', color: '#047857', ml: 0.5, fontFamily: '"DM Sans",sans-serif', fontWeight: 600 }}>↑ 12%</Box>
                 </Typography>
               </Box>
