@@ -9,107 +9,132 @@ import LockRoundedIcon from '@mui/icons-material/LockRounded';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+import WorkRoundedIcon from '@mui/icons-material/WorkRounded';
 import { useAuth } from '@/context/AuthContext';
 
 // ── Brand Panel (left side) ───────────────────────────────────────────────────
-const BrandPanel: React.FC = () => (
-  <Box
-    sx={{
-      display: { xs: 'none', md: 'flex' },
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      width: '45%',
-      minHeight: '100vh',
-      background: 'linear-gradient(160deg, #0D0F17 0%, #161829 60%, #1E1535 100%)',
-      p: 5,
-      position: 'relative',
-      overflow: 'hidden',
-      flexShrink: 0,
-    }}
-  >
-    {/* Decorative orb */}
-    <Box sx={{
-      position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%, -50%)',
-      width: 360, height: 360, borderRadius: '50%',
-      background: 'radial-gradient(circle, rgba(124,58,237,0.18) 0%, transparent 70%)',
-      pointerEvents: 'none',
-    }} />
-    <Box sx={{
-      position: 'absolute', bottom: '15%', right: '-10%',
-      width: 280, height: 280, borderRadius: '50%',
-      background: 'radial-gradient(circle, rgba(45,82,224,0.14) 0%, transparent 70%)',
-      pointerEvents: 'none',
-    }} />
+const BrandPanel: React.FC = () => {
+  const navigate = useNavigate();
 
-    {/* Logo */}
-    <Stack direction="row" alignItems="center" spacing={1.5} sx={{ position: 'relative', zIndex: 1 }}>
-      <Box
-        sx={{
-          width: 34, height: 34, borderRadius: '9px',
-          background: 'linear-gradient(135deg, #2D52E0 0%, #7C3AED 100%)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 2px 10px rgba(45,82,224,0.40)',
-        }}
-      >
-        <Box component="span" sx={{ color: '#fff', fontFamily: '"Sora",sans-serif', fontWeight: 800, fontSize: '0.9rem', lineHeight: 1 }}>J</Box>
-      </Box>
-      <Typography sx={{ fontFamily: '"Sora", sans-serif', fontWeight: 800, fontSize: '1.05rem', color: '#fff', letterSpacing: '-0.02em' }}>
-        JobFlow
-      </Typography>
-    </Stack>
+  // Each avatar: background colour + initials
+  const avatars = [
+    { bg: '#818CF8', initials: 'AK' },
+    { bg: '#C084FC', initials: 'MR' },
+    { bg: '#60A5FA', initials: 'JS' },
+    { bg: '#34D399', initials: 'LP' },
+  ];
 
-    {/* Main copy */}
-    <Box sx={{ position: 'relative', zIndex: 1 }}>
-      <Typography
-        sx={{
-          fontFamily: '"Sora", sans-serif',
-          fontWeight: 800,
-          fontSize: '2.25rem',
-          lineHeight: 1.1,
-          letterSpacing: '-0.03em',
-          color: '#fff',
-          mb: 2,
-        }}
+  return (
+    <Box
+      sx={{
+        display: { xs: 'none', md: 'flex' },
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        width: '45%',
+        minHeight: '100vh',
+        background: 'linear-gradient(160deg, #0D0F17 0%, #161829 60%, #1E1535 100%)',
+        p: 5,
+        position: 'relative',
+        overflow: 'hidden',
+        flexShrink: 0,
+      }}
+    >
+      {/* Decorative orbs */}
+      <Box sx={{
+        position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%, -50%)',
+        width: 360, height: 360, borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(124,58,237,0.18) 0%, transparent 70%)',
+        pointerEvents: 'none',
+      }} />
+      <Box sx={{
+        position: 'absolute', bottom: '15%', right: '-10%',
+        width: 280, height: 280, borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(45,82,224,0.14) 0%, transparent 70%)',
+        pointerEvents: 'none',
+      }} />
+
+      {/* Logo — clicks to landing page */}
+      <Stack
+        direction="row"
+        alignItems="center"
+        spacing={1.5}
+        onClick={() => navigate('/')}
+        sx={{ position: 'relative', zIndex: 1, cursor: 'pointer', width: 'fit-content' }}
       >
-        Your next role
-        <br />
         <Box
-          component="span"
           sx={{
-            background: 'linear-gradient(90deg, #818CF8 0%, #C084FC 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
+            width: 36, height: 36, borderRadius: 2,
+            background: 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 2px 10px rgba(45,82,224,0.40)',
           }}
         >
-          starts here.
+          <WorkRoundedIcon sx={{ color: 'white', fontSize: 20 }} />
         </Box>
-      </Typography>
-      <Typography sx={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.9375rem', lineHeight: 1.6, maxWidth: 300 }}>
-        Track every application, nail every interview, and land the job you deserve.
-      </Typography>
-    </Box>
-
-    {/* Social proof */}
-    <Box sx={{ position: 'relative', zIndex: 1 }}>
-      <Stack direction="row" spacing={-0.75} sx={{ mb: 1.5 }}>
-        {['#818CF8', '#C084FC', '#60A5FA', '#34D399'].map((c, i) => (
-          <Box
-            key={i}
-            sx={{
-              width: 28, height: 28, borderRadius: '50%',
-              bgcolor: c, border: '2px solid #0D0F17',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}
-          />
-        ))}
+        <Typography sx={{ fontFamily: '"Sora", sans-serif', fontWeight: 800, fontSize: '1.05rem', color: '#fff', letterSpacing: '-0.02em' }}>
+          JobFlow
+        </Typography>
       </Stack>
-      <Typography sx={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.8125rem' }}>
-        Join hundreds of job seekers already using JobFlow
-      </Typography>
+
+      {/* Main copy */}
+      <Box sx={{ position: 'relative', zIndex: 1 }}>
+        <Typography
+          sx={{
+            fontFamily: '"Sora", sans-serif',
+            fontWeight: 800,
+            fontSize: '2.25rem',
+            lineHeight: 1.1,
+            letterSpacing: '-0.03em',
+            color: '#fff',
+            mb: 2,
+          }}
+        >
+          Your next role
+          <br />
+          <Box
+            component="span"
+            sx={{
+              background: 'linear-gradient(90deg, #818CF8 0%, #C084FC 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
+            starts here.
+          </Box>
+        </Typography>
+        <Typography sx={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.9375rem', lineHeight: 1.6, maxWidth: 300 }}>
+          Track every application, nail every interview, and land the job you deserve.
+        </Typography>
+      </Box>
+
+      {/* Social proof */}
+      <Box sx={{ position: 'relative', zIndex: 1 }}>
+        <Stack direction="row" spacing={-0.75} sx={{ mb: 1.5 }}>
+          {avatars.map(({ bg, initials }, i) => (
+            <Box
+              key={i}
+              sx={{
+                width: 34, height: 34, borderRadius: '50%',
+                bgcolor: bg,
+                border: '2px solid #0D0F17',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                zIndex: avatars.length - i,
+              }}
+            >
+              <Typography sx={{ color: '#fff', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.01em', lineHeight: 1 }}>
+                {initials}
+              </Typography>
+            </Box>
+          ))}
+        </Stack>
+        <Typography sx={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.8125rem' }}>
+          Join hundreds of job seekers already using JobFlow
+        </Typography>
+      </Box>
     </Box>
-  </Box>
-);
+  );
+};
 
 // ── Login Page ────────────────────────────────────────────────────────────────
 const LoginPage: React.FC = () => {
@@ -152,7 +177,7 @@ const LoginPage: React.FC = () => {
           position: 'relative',
         }}
       >
-        {/* Mobile logo */}
+        {/* Mobile logo — clicks to landing page */}
         <Stack
           direction="row"
           alignItems="center"
@@ -166,12 +191,12 @@ const LoginPage: React.FC = () => {
         >
           <Box
             sx={{
-              width: 32, height: 32, borderRadius: '8px',
-              background: 'linear-gradient(135deg, #2D52E0 0%, #7C3AED 100%)',
+              width: 36, height: 36, borderRadius: 2,
+              background: 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}
           >
-            <Box component="span" sx={{ color: '#fff', fontFamily: '"Sora",sans-serif', fontWeight: 800, fontSize: '0.875rem', lineHeight: 1 }}>J</Box>
+            <WorkRoundedIcon sx={{ color: 'white', fontSize: 20 }} />
           </Box>
           <Typography sx={{ fontFamily: '"Sora", sans-serif', fontWeight: 800, fontSize: '1rem', color: '#0D0F17', letterSpacing: '-0.02em' }}>
             JobFlow

@@ -9,97 +9,108 @@ import LockRoundedIcon from '@mui/icons-material/LockRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
+import WorkRoundedIcon from '@mui/icons-material/WorkRounded';
 import { useAuth } from '@/context/AuthContext';
 
 // ── Brand Panel ───────────────────────────────────────────────────────────────
-const BrandPanel: React.FC = () => (
-  <Box
-    sx={{
-      display: { xs: 'none', md: 'flex' },
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      width: '42%',
-      minHeight: '100vh',
-      background: 'linear-gradient(160deg, #0D0F17 0%, #161829 60%, #1E1535 100%)',
-      p: 5,
-      position: 'relative',
-      overflow: 'hidden',
-      flexShrink: 0,
-    }}
-  >
-    <Box sx={{
-      position: 'absolute', top: '20%', right: '-15%',
-      width: 400, height: 400, borderRadius: '50%',
-      background: 'radial-gradient(circle, rgba(45,82,224,0.16) 0%, transparent 70%)',
-      pointerEvents: 'none',
-    }} />
-    <Box sx={{
-      position: 'absolute', bottom: '25%', left: '-10%',
-      width: 300, height: 300, borderRadius: '50%',
-      background: 'radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%)',
-      pointerEvents: 'none',
-    }} />
+const BrandPanel: React.FC = () => {
+  const navigate = useNavigate();
 
-    {/* Logo */}
-    <Stack direction="row" alignItems="center" spacing={1.5} sx={{ position: 'relative', zIndex: 1 }}>
-      <Box
-        sx={{
-          width: 34, height: 34, borderRadius: '9px',
-          background: 'linear-gradient(135deg, #2D52E0 0%, #7C3AED 100%)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 2px 10px rgba(45,82,224,0.40)',
-        }}
-      >
-        <Box component="span" sx={{ color: '#fff', fontFamily: '"Sora",sans-serif', fontWeight: 800, fontSize: '0.9rem', lineHeight: 1 }}>J</Box>
-      </Box>
-      <Typography sx={{ fontFamily: '"Sora", sans-serif', fontWeight: 800, fontSize: '1.05rem', color: '#fff', letterSpacing: '-0.02em' }}>
-        JobFlow
-      </Typography>
-    </Stack>
+  return (
+    <Box
+      sx={{
+        display: { xs: 'none', md: 'flex' },
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        width: '42%',
+        minHeight: '100vh',
+        background: 'linear-gradient(160deg, #0D0F17 0%, #161829 60%, #1E1535 100%)',
+        p: 5,
+        position: 'relative',
+        overflow: 'hidden',
+        flexShrink: 0,
+      }}
+    >
+      <Box sx={{
+        position: 'absolute', top: '20%', right: '-15%',
+        width: 400, height: 400, borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(45,82,224,0.16) 0%, transparent 70%)',
+        pointerEvents: 'none',
+      }} />
+      <Box sx={{
+        position: 'absolute', bottom: '25%', left: '-10%',
+        width: 300, height: 300, borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%)',
+        pointerEvents: 'none',
+      }} />
 
-    {/* Copy */}
-    <Box sx={{ position: 'relative', zIndex: 1 }}>
-      <Typography
-        sx={{
-          fontFamily: '"Sora", sans-serif',
-          fontWeight: 800,
-          fontSize: '2.1rem',
-          lineHeight: 1.1,
-          letterSpacing: '-0.03em',
-          color: '#fff',
-          mb: 2.5,
-        }}
+      {/* Logo — clicks to landing page */}
+      <Stack
+        direction="row"
+        alignItems="center"
+        spacing={1.5}
+        onClick={() => navigate('/')}
+        sx={{ position: 'relative', zIndex: 1, cursor: 'pointer', width: 'fit-content' }}
       >
-        One place for
-        <br />
-        <Box component="span" sx={{ background: 'linear-gradient(90deg, #818CF8 0%, #C084FC 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-          every application.
+        <Box
+          sx={{
+            width: 36, height: 36, borderRadius: 2,
+            background: 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 2px 10px rgba(45,82,224,0.40)',
+          }}
+        >
+          <WorkRoundedIcon sx={{ color: 'white', fontSize: 20 }} />
         </Box>
-      </Typography>
-
-      <Stack spacing={1.75}>
-        {[
-          'Drag-and-drop kanban board',
-          'Track interviews & offers',
-          'Analytics dashboard',
-          'Free forever, no credit card',
-        ].map((item) => (
-          <Stack key={item} direction="row" spacing={1.25} alignItems="center">
-            <CheckCircleRoundedIcon sx={{ color: '#818CF8', fontSize: 18, flexShrink: 0 }} />
-            <Typography sx={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.875rem' }}>{item}</Typography>
-          </Stack>
-        ))}
+        <Typography sx={{ fontFamily: '"Sora", sans-serif', fontWeight: 800, fontSize: '1.05rem', color: '#fff', letterSpacing: '-0.02em' }}>
+          JobFlow
+        </Typography>
       </Stack>
-    </Box>
 
-    <Typography sx={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.8125rem', position: 'relative', zIndex: 1 }}>
-      Already have an account?{' '}
-      <Link component={RouterLink} to="/login" sx={{ color: 'rgba(255,255,255,0.6)', fontWeight: 600, textDecoration: 'none', '&:hover': { color: '#fff' } }}>
-        Sign in
-      </Link>
-    </Typography>
-  </Box>
-);
+      {/* Copy */}
+      <Box sx={{ position: 'relative', zIndex: 1 }}>
+        <Typography
+          sx={{
+            fontFamily: '"Sora", sans-serif',
+            fontWeight: 800,
+            fontSize: '2.1rem',
+            lineHeight: 1.1,
+            letterSpacing: '-0.03em',
+            color: '#fff',
+            mb: 2.5,
+          }}
+        >
+          One place for
+          <br />
+          <Box component="span" sx={{ background: 'linear-gradient(90deg, #818CF8 0%, #C084FC 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+            every application.
+          </Box>
+        </Typography>
+
+        <Stack spacing={1.75}>
+          {[
+            'Drag-and-drop kanban board',
+            'Track interviews & offers',
+            'Analytics dashboard',
+            'Free forever, no credit card',
+          ].map((item) => (
+            <Stack key={item} direction="row" spacing={1.25} alignItems="center">
+              <CheckCircleRoundedIcon sx={{ color: '#818CF8', fontSize: 18, flexShrink: 0 }} />
+              <Typography sx={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.875rem' }}>{item}</Typography>
+            </Stack>
+          ))}
+        </Stack>
+      </Box>
+
+      <Typography sx={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.8125rem', position: 'relative', zIndex: 1 }}>
+        Already have an account?{' '}
+        <Link component={RouterLink} to="/login" sx={{ color: 'rgba(255,255,255,0.6)', fontWeight: 600, textDecoration: 'none', '&:hover': { color: '#fff' } }}>
+          Sign in
+        </Link>
+      </Typography>
+    </Box>
+  );
+};
 
 // ── Register Page ─────────────────────────────────────────────────────────────
 const RegisterPage: React.FC = () => {
@@ -184,7 +195,7 @@ const RegisterPage: React.FC = () => {
           overflowY: 'auto',
         }}
       >
-        {/* Mobile logo */}
+        {/* Mobile logo — clicks to landing page */}
         <Stack
           direction="row"
           alignItems="center"
@@ -196,7 +207,14 @@ const RegisterPage: React.FC = () => {
             mb: 5,
           }}
         >
-          <Box sx={{ width: 32, height: 32, borderRadius: '8px', background: 'linear-gradient(135deg, #2D52E0 0%, #7C3AED 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Box
+            sx={{
+              width: 36, height: 36, borderRadius: 2,
+              background: 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
+          >
+            <WorkRoundedIcon sx={{ color: 'white', fontSize: 20 }} />
           </Box>
           <Typography sx={{ fontFamily: '"Sora", sans-serif', fontWeight: 800, fontSize: '1rem', color: '#0D0F17', letterSpacing: '-0.02em' }}>
             JobFlow
