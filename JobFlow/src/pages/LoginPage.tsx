@@ -105,7 +105,7 @@ const BrandPanel: React.FC = () => (
         ))}
       </Stack>
       <Typography sx={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.8125rem' }}>
-        Join thousands of job seekers already using JobFlow
+        Join hundreds of job seekers already using JobFlow
       </Typography>
     </Box>
   </Box>
