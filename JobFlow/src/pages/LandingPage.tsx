@@ -96,7 +96,7 @@ const LandingPage: React.FC = () => {
               </Stack>
 
               <Typography variant="body2" color="text.secondary">
-                Note: Your preview session is temporary, so nothing will be saved unless you sign up.
+                Note: Guest sessions are temporary, nothing will be saved unless you sign up.
               </Typography>
             </Stack>
           </Grid>
@@ -110,23 +110,23 @@ const LandingPage: React.FC = () => {
                       What you can do
                     </Typography>
                     <Typography color="text.secondary">
-                      Browse your applications, update status with drag-and-drop, and review analytics!
+                      Browse your applications, update status with the drag-and-drop feature, and review analytics!
                     </Typography>
                   </Box>
 
                   <Stack spacing={2}>
                     <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
-                      <RocketLaunchRoundedIcon color="primary" sx={{ fontSize: 28, mt: '4px' }} />
+                      <RocketLaunchRoundedIcon color="secondary" sx={{ fontSize: 28, mt: '4px' }} />
                       <Box>
-                        <Typography fontWeight={700}>Explore instantly</Typography>
+                        <Typography fontWeight={700}>Explore Instantly</Typography>
                         <Typography color="text.secondary" variant="body2">
-                          Jump right into the workspace with zero signup friction.
+                          Jump right into the workspace without signing up.
                         </Typography>
                       </Box>
                     </Box>
 
                     <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
-                      <WorkRoundedIcon color="success" sx={{ fontSize: 28, mt: '4px' }} />
+                      <WorkRoundedIcon sx={{ fontSize: 28, mt: '4px', color: 'success.light' }} />
                       <Box>
                         <Typography fontWeight={700}>Track your search</Typography>
                         <Typography color="text.secondary" variant="body2">
@@ -136,9 +136,9 @@ const LandingPage: React.FC = () => {
                     </Box>
 
                     <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
-                      <PreviewRoundedIcon color="secondary" sx={{ fontSize: 28, mt: '4px' }} />
+                      <PreviewRoundedIcon sx={{ fontSize: 28, mt: '4px', color: 'text.secondary' }} />
                       <Box>
-                        <Typography fontWeight={700}>Preview the app</Typography>
+                        <Typography fontWeight={700}>Guest View</Typography>
                         <Typography color="text.secondary" variant="body2">
                           Check the app without signing in. Your work stays local until you create an account.
                         </Typography>
