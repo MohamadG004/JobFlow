@@ -305,9 +305,8 @@ const LandingPage: React.FC = () => {
                 {/* Mock header */}
                 <Stack direction="row" alignItems="center" justifyContent="center" sx={{ mb: 2.5 }}>
                   <Box sx={{ px: 1.5, py: 0.4, bgcolor: '#F0EDE8', borderRadius: '6px' }}>
-                    <Typography sx={{ fontSize: '0.72rem', fontWeight: 600, color: '#6B7180' }}>Job Board</Typography>
+                    <Typography sx={{ fontSize: '0.72rem', fontWeight: 600, color: '#000000' }}>Job Board</Typography>
                   </Box>
-                  <Box sx={{ width: 48 }} />
                 </Stack>
 
                 {/* Columns */}
