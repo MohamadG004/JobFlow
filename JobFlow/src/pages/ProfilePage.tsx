@@ -216,7 +216,8 @@ const ProfilePage: React.FC = () => {
               color: '#B91C1C',
               '&:hover': {
                 borderColor: '#DC2626',
-                bgcolor: '#FEF2F2',
+                color: '#B91C1C',
+                backgroundColor: '#FEF2F2',
               },
             }}
           >
