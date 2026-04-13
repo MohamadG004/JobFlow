@@ -157,7 +157,7 @@ const LandingPage: React.FC = () => {
       </Box>
 
       {/* Hero */}
-      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1, pt: { xs: 6, md: 10 }, pb: 8 }}>
+      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1, pt: { xs: 2, md: 4 }, pb: 5 }}>
         <Grid container spacing={{ xs: 6, md: 10 }} alignItems="center">
           {/* Left: Copy */}
           <Grid item xs={12} md={6}>
