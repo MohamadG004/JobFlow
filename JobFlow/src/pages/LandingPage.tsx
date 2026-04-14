@@ -315,20 +315,20 @@ const LandingPage: React.FC = () => {
                     {
                       label: 'Applied', color: '#2D52E0',
                       cards: [
-                        { company: 'Stripe', role: 'Software Engineer', date: 'Apr 8', delay: '0s' },
+                        { company: 'Google', role: 'Software Engineer', date: 'Apr 8', delay: '0s' },
                         { company: 'Vercel', role: 'Product Design', date: 'Apr 6', delay: '0.8s' },
                       ],
                     },
                     {
                       label: 'Interview', color: '#C27803',
                       cards: [
-                        { company: 'Linear', role: 'Full Stack', date: 'Apr 3', delay: '1.6s' },
+                        { company: 'Amazon', role: 'Full Stack', date: 'Apr 3', delay: '1.6s' },
                       ],
                     },
                     {
                       label: 'Offer', color: '#047857',
                       cards: [
-                        { company: 'Figma', role: 'React Developer', date: 'Mar 28', delay: '2.4s' },
+                        { company: 'Stripe', role: 'React Developer', date: 'Mar 28', delay: '2.4s' },
                       ],
                     },
                   ].map((col) => (
