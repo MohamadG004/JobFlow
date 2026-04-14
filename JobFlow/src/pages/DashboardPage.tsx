@@ -455,7 +455,7 @@ const DashboardPage: React.FC = () => {
           <Stack direction="row" spacing={1.5} alignItems="center">
             <TextField
               size="small"
-              placeholder="Search company or role…"
+              placeholder="Search company or role"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               InputProps={{
@@ -466,7 +466,7 @@ const DashboardPage: React.FC = () => {
                 ),
               }}
               sx={{
-                width: { xs: '100%', sm: 220 },
+                width: { xs: '100%', sm: 230 },
                 '& .MuiOutlinedInput-root': { height: 38 },
               }}
             />
