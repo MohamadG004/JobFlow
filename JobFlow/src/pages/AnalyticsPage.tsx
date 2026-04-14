@@ -178,6 +178,7 @@ const AnalyticsPage: React.FC = () => {
             value={analytics.offersReceived}
             color="#047857"
             bgColor="#ECFDF5"
+            sub={analytics.offersReceived > 0 ? "Congratulations!" : "Keep Pushing!"}
           />
         </Grid>
         <Grid item xs={6} lg={3}>
