@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import {
   Box, Typography, Button, CircularProgress, Alert,
   Snackbar, Stack, TextField, InputAdornment,
+  Dialog, DialogTitle, DialogContent, DialogActions,
 } from '@mui/material';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
@@ -293,6 +294,10 @@ const DashboardPage: React.FC = () => {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [snackbar, setSnackbar] = useState({ open: false, message: '' });
+  const [confirmDialog, setConfirmDialog] = useState<{ open: boolean; appId: string | null }>({
+    open: false,
+    appId: null,
+  });
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
@@ -409,9 +414,14 @@ const DashboardPage: React.FC = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm('Delete this application?')) return;
-    await deleteApplication(id);
+  const handleDelete = (id: string) => {
+    setConfirmDialog({ open: true, appId: id });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!confirmDialog.appId) return;
+    await deleteApplication(confirmDialog.appId);
+    setConfirmDialog({ open: false, appId: null });
     setSnackbar({ open: true, message: 'Application deleted' });
   };
 
@@ -539,6 +549,70 @@ const DashboardPage: React.FC = () => {
         initialData={editingApp}
         defaultStatus={defaultStatus}
       />
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={confirmDialog.open}
+        onClose={() => setConfirmDialog({ open: false, appId: null })}
+        PaperProps={{
+          sx: {
+            borderRadius: '16px',
+            p: 1,
+            maxWidth: 380,
+            width: '100%',
+            boxShadow: '0 24px 64px rgba(13,15,23,0.14)',
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            fontFamily: '"Sora", sans-serif',
+            fontWeight: 700,
+            fontSize: '1rem',
+            color: '#0D0F17',
+            pb: 0.5,
+          }}
+        >
+          Delete application?
+        </DialogTitle>
+        <DialogContent sx={{ pb: 1 }}>
+          <Typography sx={{ fontSize: '0.875rem', color: '#6B7180', lineHeight: 1.6 }}>
+            This action can't be undone. The application will be permanently removed from your board.
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ px: 2.5, pb: 2, gap: 1 }}>
+          <Button
+            onClick={() => setConfirmDialog({ open: false, appId: null })}
+            variant="outlined"
+            sx={{
+              borderRadius: '9px',
+              textTransform: 'none',
+              fontWeight: 600,
+              fontSize: '0.875rem',
+              borderColor: '#EEECE8',
+              color: '#6B7180',
+              '&:hover': { borderColor: '#C4C0BC', bgcolor: '#FAFAF9', color: '#6B7180' },
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleConfirmDelete}
+            variant="contained"
+            sx={{
+              borderRadius: '9px',
+              textTransform: 'none',
+              fontWeight: 600,
+              fontSize: '0.875rem',
+              background: '#DC2626',
+              boxShadow: 'none',
+              '&:hover': { background: '#B91C1C', boxShadow: 'none' },
+            }}
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Snackbar
         open={snackbar.open}
