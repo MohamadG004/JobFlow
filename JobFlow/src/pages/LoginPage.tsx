@@ -110,23 +110,7 @@ const BrandPanel: React.FC = () => {
 
       {/* Social proof */}
       <Box sx={{ position: 'relative', zIndex: 1 }}>
-        <Stack direction="row" spacing={-0.75} sx={{ mb: 1.5 }}>
-          {avatars.map(({ bg, initials }, i) => (
-            <Box
-              key={i}
-              sx={{
-                width: 34, height: 34, borderRadius: '50%',
-                bgcolor: bg,
-                border: '2px solid #0D0F17',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                zIndex: avatars.length - i,
-              }}
-            >
-              <Typography sx={{ color: '#fff', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.01em', lineHeight: 1 }}>
-                {initials}
-              </Typography>
-            </Box>
-          ))}
+        <Stack direction="row" spacing={-0.75} sx={{ mb: 7 }}>          
         </Stack>
         <Typography sx={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.8125rem' }}>
           Join hundreds of job seekers already using JobFlow
