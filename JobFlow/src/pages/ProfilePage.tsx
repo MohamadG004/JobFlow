@@ -5,7 +5,6 @@ import {
 } from '@mui/material';
 import LockRoundedIcon from '@mui/icons-material/LockRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import ShieldRoundedIcon from '@mui/icons-material/ShieldRounded';
 import CameraAltRoundedIcon from '@mui/icons-material/CameraAltRounded';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useAuth } from '@/context/AuthContext';
@@ -333,7 +332,6 @@ const ProfilePage: React.FC = () => {
                     type="submit"
                     variant="contained"
                     disabled={loading}
-                    startIcon={<ShieldRoundedIcon sx={{ fontSize: '1rem !important' }} />}
                   >
                     {loading ? 'Updating…' : 'Update password'}
                   </Button>
@@ -347,12 +345,12 @@ const ProfilePage: React.FC = () => {
         <SectionCard
           title="Sign out"
           subtitle="Sign out of this device"
+          icon={<LogoutRoundedIcon sx={{ fontSize: 17 }} />}
           danger
         >
           <Button
             variant="outlined"
             color="error"
-            startIcon={<LogoutRoundedIcon sx={{ fontSize: '0.95rem !important' }} />}
             onClick={handleSignOut}
             sx={{
               borderColor: '#FECACA',
@@ -373,6 +371,7 @@ const ProfilePage: React.FC = () => {
           <SectionCard
             title="Delete Account"
             subtitle="Permanently remove your account and all data"
+            icon={<DeleteIcon sx={{ fontSize: 17 }} />}
             danger
           >
             {deleteMsg && (
@@ -400,7 +399,6 @@ const ProfilePage: React.FC = () => {
                   color="error"
                   disabled={deleteLoading || deleteConfirm !== (user?.email ?? '')}
                   onClick={handleDeleteAccount}
-                  startIcon={<DeleteIcon sx={{ fontSize: '0.95rem !important' }} />}
                   sx={{
                     borderColor: '#FECACA',
                     color: '#B91C1C',
