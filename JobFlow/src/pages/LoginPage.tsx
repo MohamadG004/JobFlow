@@ -111,7 +111,7 @@ const BrandPanel: React.FC = () => {
             to="/register"
             sx={{ fontWeight: 700, color: '#cbcbcb', textDecoration: 'none', '&:hover': { textDecoration: 'none' } }}
           >
-            Create one free
+            Create one
           </Link>
         </Typography>
       </Box>
@@ -303,7 +303,7 @@ const LoginPage: React.FC = () => {
                 to="/register"
                 sx={{ fontWeight: 700, color: '#2D52E0', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
               >
-                Create one free
+                Create one
               </Link>
             </Typography>
           </Box>
