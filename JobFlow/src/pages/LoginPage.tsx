@@ -104,8 +104,15 @@ const BrandPanel: React.FC = () => {
       <Box sx={{ position: 'relative', zIndex: 1 }}>
         <Stack direction="row" spacing={-0.75} sx={{ mb: 7 }}>          
         </Stack>
-        <Typography sx={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.8125rem' }}>
-          Join hundreds of job seekers already using JobFlow
+        <Typography sx={{ color: '#6B7180', fontSize: '0.875rem' }}>
+          Don&apos;t have an account?{' '}
+          <Link
+            component={RouterLink}
+            to="/register"
+            sx={{ fontWeight: 700, color: '#cbcbcb', textDecoration: 'none', '&:hover': { textDecoration: 'none' } }}
+          >
+            Create one free
+          </Link>
         </Typography>
       </Box>
     </Box>
