@@ -7,7 +7,7 @@ import LockRoundedIcon from '@mui/icons-material/LockRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import ShieldRoundedIcon from '@mui/icons-material/ShieldRounded';
 import CameraAltRoundedIcon from '@mui/icons-material/CameraAltRounded';
-import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useAuth } from '@/context/AuthContext';
 import { authService } from '@/services/authService';
 import { useNavigate } from 'react-router-dom';
@@ -373,7 +373,6 @@ const ProfilePage: React.FC = () => {
           <SectionCard
             title="Delete Account"
             subtitle="Permanently remove your account and all data"
-            icon={<DeleteForeverRoundedIcon sx={{ fontSize: 17 }} />}
             danger
           >
             {deleteMsg && (
@@ -401,7 +400,7 @@ const ProfilePage: React.FC = () => {
                   color="error"
                   disabled={deleteLoading || deleteConfirm !== (user?.email ?? '')}
                   onClick={handleDeleteAccount}
-                  startIcon={<DeleteForeverRoundedIcon sx={{ fontSize: '0.95rem !important' }} />}
+                  startIcon={<DeleteIcon sx={{ fontSize: '0.95rem !important' }} />}
                   sx={{
                     borderColor: '#FECACA',
                     color: '#B91C1C',
