@@ -1,33 +1,29 @@
 import React, { useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
-  Box, Drawer, AppBar, Toolbar, Typography, List, ListItem,
-  ListItemButton, ListItemIcon, ListItemText, Avatar, Divider,
-  IconButton, Tooltip, useTheme, useMediaQuery, alpha,
-} from '@mui/material';
-import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
-import BarChartRoundedIcon from '@mui/icons-material/BarChartRounded';
-import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
-import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
-import WorkRoundedIcon from '@mui/icons-material/WorkRounded';
+  LayoutDashboard,
+  BarChart3,
+  User,
+  LogOut,
+  Menu,
+  Briefcase,
+} from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
-const DRAWER_WIDTH = 240;
-
 const navItems = [
-  { label: 'Board', path: '/dashboard', icon: <DashboardRoundedIcon /> },
-  { label: 'Analytics', path: '/analytics', icon: <BarChartRoundedIcon /> },
-  { label: 'Profile', path: '/profile', icon: <PersonRoundedIcon /> },
+  { label: 'Board', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
+  { label: 'Analytics', path: '/analytics', icon: <BarChart3 size={20} /> },
+  { label: 'Profile', path: '/profile', icon: <User size={20} /> },
 ];
 
 const AppLayout: React.FC = () => {
   const { user, signOut, avatarUrl } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Simple responsive check
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
   const handleSignOut = async () => {
     await signOut();
@@ -37,178 +33,149 @@ const AppLayout: React.FC = () => {
   const userInitial = (user?.username?.[0] || user?.email?.[0] || '').toUpperCase();
 
   const drawerContent = (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <div className="h-full flex flex-col">
       {/* Logo */}
-      <Box
+      <div
         onClick={handleSignOut}
-        sx={{ px: 3, py: 2.5, display: 'flex', alignItems: 'center', gap: 1.5, cursor: 'pointer', borderRadius: 1, '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.04) } }}
+        className="px-6 py-5 flex items-center gap-3 cursor-pointer hover:bg-blue-50 rounded-lg mx-2 mt-2 transition-colors"
       >
-        <Box
-          sx={{
-            width: 36, height: 36, borderRadius: 2,
-            background: 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}
-        >
-          <WorkRoundedIcon sx={{ color: 'white', fontSize: 20 }} />
-        </Box>
-        <Typography variant="h6" sx={{ fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em' }}>
+        <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
+          <Briefcase className="text-white w-5 h-5" />
+        </div>
+        <span className="text-lg font-extrabold text-slate-900 tracking-tight">
           JobFlow
-        </Typography>
-      </Box>
+        </span>
+      </div>
 
-      <Divider />
+      <div className="border-t border-[var(--color-divider)] my-2" />
 
       {/* Navigation */}
-      <List sx={{ px: 1.5, py: 1.5, flexGrow: 1 }}>
+      <div className="px-3 py-3 flex-1">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
-            <ListItem key={item.path} disablePadding sx={{ mb: 0.5 }}>
-              <ListItemButton
+            <div key={item.path} className="mb-1">
+              <button
                 onClick={() => { navigate(item.path); setMobileOpen(false); }}
-                sx={{
-                  borderRadius: 2,
-                  color: isActive ? 'primary.main' : 'text.secondary',
-                  bgcolor: isActive ? alpha(theme.palette.primary.main, 0.08) : 'transparent',
-                  '&:hover': {
-                    bgcolor: isActive
-                      ? alpha(theme.palette.primary.main, 0.12)
-                      : alpha(theme.palette.text.primary, 0.04),
-                  },
-                }}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-colors ${
+                  isActive
+                    ? 'bg-blue-50 text-[var(--color-primary)]'
+                    : 'text-[var(--color-text-secondary)] hover:bg-slate-50'
+                }`}
               >
-                <ListItemIcon sx={{ minWidth: 36, color: isActive ? 'primary.main' : 'text.secondary' }}>
+                <span className={isActive ? 'text-[var(--color-primary)]' : 'text-inherit'}>
                   {item.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.label}
-                  primaryTypographyProps={{ fontSize: '0.9rem', fontWeight: isActive ? 600 : 500 }}
-                />
+                </span>
+                <span className={`text-sm font-medium ${isActive ? 'font-semibold' : ''}`}>
+                  {item.label}
+                </span>
                 {isActive && (
-                  <Box sx={{ width: 4, height: 20, borderRadius: 1, bgcolor: 'primary.main', ml: 1 }} />
+                  <div className="w-1 h-5 rounded-full bg-[var(--color-primary)] ml-auto" />
                 )}
-              </ListItemButton>
-            </ListItem>
+              </button>
+            </div>
           );
         })}
-      </List>
+      </div>
 
-      <Divider />
+      <div className="border-t border-[var(--color-divider)] my-2" />
 
       {/* User section */}
-      <Box sx={{ px: 2, py: 2 }}>
-        <Box
+      <div className="px-3 py-3">
+        <div
           onClick={() => navigate('/profile')}
-          sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1, cursor: 'pointer', borderRadius: 1, px: 1, py: 0.5,
-            '&:hover': {
-              bgcolor: alpha(theme.palette.primary.main, 0.04),
-            },
-          }}
+          className="flex items-center gap-3 mb-2 cursor-pointer rounded-lg px-2 py-1.5 hover:bg-blue-50 transition-colors"
         >
-          <Avatar
-            src={avatarUrl ?? undefined}
-            sx={{
-              width: 36, height: 36, fontSize: '0.9rem', fontWeight: 700,
-              background: avatarUrl ? 'none' : 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)',
-            }}
-          >
-            {userInitial}
-          </Avatar>
-          <Box sx={{ overflow: 'hidden', flex: 1 }}>
-            <Typography
-              variant="body2"
-              sx={{ fontWeight: 600, color: 'text.primary', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
-            >
+          {avatarUrl ? (
+            <img
+              src={avatarUrl}
+              alt="Avatar"
+              className="w-9 h-9 rounded-full object-cover"
+            />
+          ) : (
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white text-sm font-bold">
+              {userInitial}
+            </div>
+          )}
+          <div className="flex-1 overflow-hidden">
+            <p className="text-sm font-semibold text-[var(--color-text-primary)] truncate">
               {user?.username || user?.email}
-            </Typography>
-          </Box>
-        </Box>
-        <Tooltip title="Sign out">
-          <ListItemButton
-            onClick={handleSignOut}
-            sx={{ borderRadius: 2, color: 'text.secondary', '&:hover': { color: 'error.main', bgcolor: alpha(theme.palette.error.main, 0.04) } }}
-          >
-            <ListItemIcon sx={{ minWidth: 32, color: 'inherit' }}>
-              <LogoutRoundedIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText primary="Sign out" primaryTypographyProps={{ fontSize: '0.85rem', fontWeight: 500 }} />
-          </ListItemButton>
-        </Tooltip>
-      </Box>
-    </Box>
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={handleSignOut}
+          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[var(--color-text-secondary)] hover:text-red-600 hover:bg-red-50 transition-colors"
+        >
+          <LogOut size={18} />
+          <span className="text-sm font-medium">Sign out</span>
+        </button>
+      </div>
+    </div>
   );
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'background.default' }}>
-      {/* Mobile AppBar */}
+    <div className="flex min-h-screen bg-[var(--color-bg-default)]">
+      {/* Mobile Header */}
       {isMobile && (
-        <AppBar
-          position="fixed"
-          elevation={0}
-          sx={{ bgcolor: 'background.paper', color: 'text.primary', borderBottom: '1px solid', borderColor: 'divider' }}
-        >
-          <Toolbar>
-            <IconButton onClick={() => setMobileOpen(true)} edge="start">
-              <MenuRoundedIcon />
-            </IconButton>
-            <Box
-              onClick={handleSignOut}
-              sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 1, cursor: 'pointer', px: 1, py: 0.5, borderRadius: 1, '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.04) } }}
-            >
-              <WorkRoundedIcon sx={{ color: 'primary.main' }} />
-              <Typography variant="h6" sx={{ fontWeight: 800 }}>JobFlow</Typography>
-            </Box>
-            {/* Avatar in mobile toolbar */}
-            <Avatar
-              src={avatarUrl ?? undefined}
+        <div className="fixed top-0 left-0 right-0 z-40 bg-white border-b border-[var(--color-divider)] h-14 flex items-center px-4">
+          <button
+            onClick={() => setMobileOpen(true)}
+            className="p-2 -ml-2 hover:bg-slate-100 rounded-lg"
+          >
+            <Menu size={24} />
+          </button>
+          <div
+            onClick={handleSignOut}
+            className="flex items-center gap-2 ml-2 cursor-pointer px-2 py-1 rounded-lg hover:bg-blue-50"
+          >
+            <Briefcase className="text-[var(--color-primary)]" size={20} />
+            <span className="text-lg font-extrabold">JobFlow</span>
+          </div>
+          {avatarUrl ? (
+            <img
+              src={avatarUrl}
+              alt="Avatar"
               onClick={() => navigate('/profile')}
-              sx={{
-                ml: 'auto',
-                width: 32, height: 32, fontSize: '0.8rem', fontWeight: 700,
-                cursor: 'pointer',
-                background: avatarUrl ? 'none' : 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)',
-              }}
+              className="w-8 h-8 rounded-full object-cover ml-auto cursor-pointer"
+            />
+          ) : (
+            <div
+              onClick={() => navigate('/profile')}
+              className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white text-sm font-bold ml-auto cursor-pointer"
             >
               {userInitial}
-            </Avatar>
-          </Toolbar>
-        </AppBar>
+            </div>
+          )}
+        </div>
       )}
 
       {/* Sidebar */}
-      <Box component="nav" sx={{ width: { md: DRAWER_WIDTH }, flexShrink: { md: 0 } }}>
-        <Drawer
-          variant={isMobile ? 'temporary' : 'permanent'}
-          open={isMobile ? mobileOpen : true}
-          onClose={() => setMobileOpen(false)}
-          ModalProps={{ keepMounted: true }}
-          sx={{
-            '& .MuiDrawer-paper': {
-              width: DRAWER_WIDTH,
-              boxSizing: 'border-box',
-              bgcolor: 'background.paper',
-            },
-          }}
+      <div className={`${isMobile ? 'fixed' : 'relative'} z-30`}>
+        {isMobile && mobileOpen && (
+          <div
+            className="fixed inset-0 bg-black/50"
+            onClick={() => setMobileOpen(false)}
+          />
+        )}
+        <div
+          className={`${isMobile ? 'w-60' : 'w-60'} h-screen bg-white border-r border-[var(--color-divider)] ${
+            isMobile ? 'fixed left-0 top-0 pt-14' : 'relative'
+          }`}
         >
           {drawerContent}
-        </Drawer>
-      </Box>
+        </div>
+      </div>
 
       {/* Main content */}
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          width: { md: `calc(100% - ${DRAWER_WIDTH}px)` },
-          mt: { xs: 8, md: 0 },
-          minHeight: '100vh',
-          overflow: 'hidden',
-        }}
+      <div
+        className={`flex-1 min-h-screen overflow-hidden ${
+          isMobile ? 'pt-14' : ''
+        }`}
       >
         <Outlet />
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 };
 

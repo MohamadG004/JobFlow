@@ -1,12 +1,5 @@
 import React, { useRef, useState } from 'react';
-import {
-  Box, Typography, Card, CardContent, Stack,
-  TextField, Button, Alert, CircularProgress, Tooltip,
-} from '@mui/material';
-import LockRoundedIcon from '@mui/icons-material/LockRounded';
-import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import CameraAltRoundedIcon from '@mui/icons-material/CameraAltRounded';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Lock, LogOut, Camera, Trash2, Loader2 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { authService } from '@/services/authService';
 import { useNavigate } from 'react-router-dom';
@@ -32,78 +25,43 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) onFileSelected?.(file);
-    // Reset so the same file can be re-selected after an error
     e.target.value = '';
   };
 
   return (
-    <Tooltip title={editable ? 'Change photo' : ''} placement="bottom" disableHoverListener={!editable}>
-      <Box
-        onClick={handleClick}
-        sx={{
-          position: 'relative',
-          width: 52, height: 52,
-          borderRadius: '14px',
-          flexShrink: 0,
-          cursor: editable ? 'pointer' : 'default',
-          overflow: 'hidden',
-          boxShadow: '0 3px 10px rgba(45,82,224,0.30)',
-          '&:hover .avatar-overlay': editable ? { opacity: 1 } : {},
-        }}
-      >
-        {/* Base: image or gradient initial */}
-        {avatarUrl ? (
-          <Box
-            component="img"
-            src={avatarUrl}
-            alt="Profile"
-            sx={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-          />
-        ) : (
-          <Box
-            sx={{
-              width: '100%', height: '100%',
-              background: 'linear-gradient(135deg, #2D52E0 0%, #7C3AED 100%)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}
-          >
-            <Typography sx={{ fontFamily: '"Sora", sans-serif', fontWeight: 800, fontSize: '1.25rem', color: '#fff', lineHeight: 1 }}>
-              {initial}
-            </Typography>
-          </Box>
-        )}
+    <div
+      onClick={handleClick}
+      className={`relative w-13 h-13 rounded-xl shrink-0 overflow-hidden cursor-pointer ${editable ? 'hover:opacity-90' : ''}`}
+      style={{ boxShadow: '0 3px 10px rgba(45,82,224,0.30)' }}
+    >
+      {avatarUrl ? (
+        <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover block" />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #2D52E0 0%, #7C3AED 100%)' }}>
+          <span className="text-xl font-extrabold text-white" style={{ fontFamily: 'Sora, sans-serif', lineHeight: 1 }}>{initial}</span>
+        </div>
+      )}
 
-        {/* Hover / uploading overlay */}
-        {editable && (
-          <Box
-            className="avatar-overlay"
-            sx={{
-              position: 'absolute', inset: 0,
-              bgcolor: 'rgba(0,0,0,0.45)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              opacity: uploading ? 1 : 0,
-              transition: 'opacity 0.18s',
-              borderRadius: '14px',
-            }}
-          >
-            {uploading
-              ? <CircularProgress size={20} thickness={5} sx={{ color: '#fff' }} />
-              : <CameraAltRoundedIcon sx={{ color: '#fff', fontSize: 20 }} />}
-          </Box>
-        )}
+      {editable && (
+        <div className={`absolute inset-0 flex items-center justify-center transition-opacity ${uploading ? 'opacity-100' : 'opacity-0'}`} style={{ backgroundColor: 'rgba(0,0,0,0.45)', borderRadius: '14px' }}>
+          {uploading ? (
+            <Loader2 className="w-5 h-5 text-white animate-spin" />
+          ) : (
+            <Camera className="w-5 h-5 text-white" />
+          )}
+        </div>
+      )}
 
-        {/* Hidden file input */}
-        {editable && (
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/jpeg,image/png,image/webp,image/gif"
-            style={{ display: 'none' }}
-            onChange={handleChange}
-          />
-        )}
-      </Box>
-    </Tooltip>
+      {editable && (
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/gif"
+          className="hidden"
+          onChange={handleChange}
+        />
+      )}
+    </div>
   );
 };
 
@@ -115,41 +73,20 @@ const SectionCard: React.FC<{
   children: React.ReactNode;
   danger?: boolean;
 }> = ({ title, subtitle, icon, children, danger }) => (
-  <Card
-    sx={{
-      border: danger ? '1px solid #FECACA' : '1px solid #EEECE8',
-      bgcolor: danger ? '#FFFAFA' : '#fff',
-    }}
-  >
-    <CardContent sx={{ p: { xs: 3, sm: 3.5 } }}>
-      <Stack direction="row" spacing={1.5} alignItems="flex-start" sx={{ mb: 3 }}>
-        {icon && (
-          <Box
-            sx={{
-              width: 34, height: 34, borderRadius: '9px', flexShrink: 0,
-              bgcolor: danger ? '#FEF2F2' : '#F0F4FF',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}
-          >
-            <Box sx={{ color: danger ? '#DC2626' : '#2D52E0', display: 'flex', fontSize: '1rem' }}>
-              {icon}
-            </Box>
-          </Box>
-        )}
-        <Box>
-          <Typography sx={{ fontFamily: '"Sora", sans-serif', fontWeight: 700, fontSize: '0.9375rem', color: danger ? '#B91C1C' : '#0D0F17', lineHeight: 1.3 }}>
-            {title}
-          </Typography>
-          {subtitle && (
-            <Typography sx={{ fontSize: '0.8125rem', color: '#6B7180', mt: 0.25 }}>
-              {subtitle}
-            </Typography>
-          )}
-        </Box>
-      </Stack>
-      {children}
-    </CardContent>
-  </Card>
+  <div className={`rounded-xl border p-6 ${danger ? 'border-red-200 bg-red-50/50' : 'border-[#EEECE8] bg-white'}`}>
+    <div className="flex items-start gap-3 mb-5">
+      {icon && (
+        <div className={`w-8.5 h-8.5 rounded-lg flex items-center justify-center shrink-0 ${danger ? 'bg-red-100' : 'bg-blue-50'}`}>
+          <span className={danger ? 'text-red-600' : 'text-[var(--color-primary)]'}>{icon}</span>
+        </div>
+      )}
+      <div>
+        <h3 className={`text-sm font-bold ${danger ? 'text-red-800' : 'text-[#0D0F17]'}`} style={{ fontFamily: 'Sora, sans-serif' }}>{title}</h3>
+        {subtitle && <p className="text-xs text-[#6B7180] mt-1">{subtitle}</p>}
+      </div>
+    </div>
+    {children}
+  </div>
 );
 
 // ── Profile Page ──────────────────────────────────────────────────────────────
@@ -157,17 +94,14 @@ const ProfilePage: React.FC = () => {
   const { user, guestMode, signOut, avatarUrl, uploadAvatar, deleteAccount } = useAuth();
   const navigate = useNavigate();
 
-  // ── Password state
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  // ── Avatar state
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [avatarMsg, setAvatarMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  // ── Delete account state
   const [deleteConfirm, setDeleteConfirm] = useState('');
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteMsg, setDeleteMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -197,7 +131,7 @@ const ProfilePage: React.FC = () => {
   };
 
   const handleAvatarSelected = async (file: File) => {
-    const maxBytes = 5 * 1024 * 1024; // 5 MB
+    const maxBytes = 5 * 1024 * 1024;
     if (file.size > maxBytes) {
       setAvatarMsg({ type: 'error', text: 'Image must be smaller than 5 MB' });
       return;
@@ -220,8 +154,6 @@ const ProfilePage: React.FC = () => {
   };
 
   const handleDeleteAccount = async () => {
-    // Guard is also enforced by the disabled prop on the button,
-    // but we double-check here for safety.
     if (deleteConfirm !== (user?.email ?? '')) {
       setDeleteMsg({ type: 'error', text: 'Email does not match' });
       return;
@@ -240,26 +172,23 @@ const ProfilePage: React.FC = () => {
   const initial = (user?.username?.[0] || user?.email?.[0] || '?').toUpperCase();
 
   return (
-    <Box sx={{ p: { xs: 2.5, md: 4 }, maxWidth: 580 }}>
-      {/* Page header */}
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h5" sx={{ fontFamily: '"Sora", sans-serif', fontWeight: 800, letterSpacing: '-0.02em', mb: 0.5 }}>
+    <div className="p-4 md:p-8 max-w-[580px]">
+      <div className="mb-6">
+        <h2 className="text-xl font-extrabold text-[#0D0F17] mb-1" style={{ fontFamily: 'Sora, sans-serif', letterSpacing: '-0.02em' }}>
           Profile &amp; Settings
-        </Typography>
-        <Typography sx={{ color: '#6B7180', fontSize: '0.9rem' }}>
-          Manage your account and preferences
-        </Typography>
-      </Box>
+        </h2>
+        <p className="text-sm text-[#6B7180]">Manage your account and preferences</p>
+      </div>
 
-      <Stack spacing={2.5}>
+      <div className="space-y-5">
         {/* Account info */}
         <SectionCard title="Account" subtitle="Your profile information">
           {avatarMsg && (
-            <Alert severity={avatarMsg.type} sx={{ mb: 2.5 }} onClose={() => setAvatarMsg(null)}>
+            <div className={`mb-5 p-3 rounded-lg text-sm ${avatarMsg.type === 'success' ? 'bg-green-50 border border-green-200 text-green-700' : 'bg-red-50 border border-red-200 text-red-700'}`}>
               {avatarMsg.text}
-            </Alert>
+            </div>
           )}
-          <Stack direction="row" spacing={2} alignItems="center">
+          <div className="flex items-center gap-4">
             <UserAvatar
               initial={initial}
               avatarUrl={avatarUrl}
@@ -267,33 +196,18 @@ const ProfilePage: React.FC = () => {
               onFileSelected={handleAvatarSelected}
               uploading={avatarUploading}
             />
-            <Box sx={{ minWidth: 0 }}>
-              <Typography sx={{ fontWeight: 700, fontSize: '0.9375rem', color: '#0D0F17', mb: 0.25 }}>
-                {user?.username || user?.email}
-              </Typography>
-              <Typography sx={{ fontSize: '0.8125rem', color: '#6B7180' }}>
-                {user?.email}
-              </Typography>
+            <div className="min-w-0">
+              <p className="font-bold text-sm text-[#0D0F17] mb-0.5">{user?.username || user?.email}</p>
+              <p className="text-xs text-[#6B7180]">{user?.email}</p>
               {guestMode ? (
-                <Box
-                  sx={{
-                    display: 'inline-flex', alignItems: 'center',
-                    mt: 0.75, px: 1, py: 0.35,
-                    bgcolor: '#FFFBEB', border: '1px solid #FDE68A',
-                    borderRadius: '6px',
-                  }}
-                >
-                  <Typography sx={{ fontSize: '0.72rem', fontWeight: 600, color: '#92400E' }}>
-                    Guest session
-                  </Typography>
-                </Box>
+                <span className="inline-flex items-center mt-2 px-2 py-1 bg-amber-50 border border-amber-200 rounded-md">
+                  <span className="text-xs font-semibold text-amber-700">Guest session</span>
+                </span>
               ) : (
-                <Typography sx={{ fontSize: '0.72rem', color: '#9CA3AF', mt: 0.5 }}>
-                  Click your photo to change it
-                </Typography>
+                <p className="text-xs text-[#9CA3AF] mt-2">Click your photo to change it</p>
               )}
-            </Box>
-          </Stack>
+            </div>
+          </div>
         </SectionCard>
 
         {/* Change password – signed-in users only */}
@@ -301,73 +215,63 @@ const ProfilePage: React.FC = () => {
           <SectionCard
             title="Change Password"
             subtitle="Update your login credentials"
-            icon={<LockRoundedIcon sx={{ fontSize: 17 }} />}
+            icon={<Lock size={17} />}
           >
             {msg && (
-              <Alert severity={msg.type} sx={{ mb: 2.5 }}>{msg.text}</Alert>
+              <div className={`mb-5 p-3 rounded-lg text-sm ${msg.type === 'success' ? 'bg-green-50 border border-green-200 text-green-700' : 'bg-red-50 border border-red-200 text-red-700'}`}>
+                {msg.text}
+              </div>
             )}
-            <Box component="form" onSubmit={handlePasswordUpdate}>
-              <Stack spacing={2.5}>
-                <TextField
-                  label="New password"
-                  type="password"
-                  fullWidth
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  helperText="Minimum 8 characters"
-                  autoComplete="new-password"
-                />
-                <TextField
-                  label="Confirm new password"
-                  type="password"
-                  fullWidth
-                  required
-                  value={confirm}
-                  onChange={(e) => setConfirm(e.target.value)}
-                  autoComplete="new-password"
-                />
-                <Box>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    disabled={loading}
-                  >
-                    {loading ? 'Updating…' : 'Update password'}
-                  </Button>
-                </Box>
-              </Stack>
-            </Box>
+            <form onSubmit={handlePasswordUpdate}>
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-[#0D0F17] mb-1.5">New password</label>
+                  <input
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+                    placeholder="••••••••"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Minimum 8 characters</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[#0D0F17] mb-1.5">Confirm new password</label>
+                  <input
+                    type="password"
+                    required
+                    value={confirm}
+                    onChange={(e) => setConfirm(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+                    placeholder="••••••••"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="px-4 py-2 bg-[var(--color-primary)] text-white font-semibold rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors disabled:opacity-50"
+                >
+                  {loading ? 'Updating…' : 'Update password'}
+                </button>
+              </div>
+            </form>
           </SectionCard>
         )}
 
         {/* Sign Out / Exit Guest */}
         <SectionCard
           title={guestMode ? "Guest session" : "Sign out"}
-          subtitle={
-            guestMode
-              ? "End temporary session"
-              : "Sign out of this device"
-          }
-          icon={<LogoutRoundedIcon sx={{ fontSize: 17 }} />}
+          subtitle={guestMode ? "End temporary session" : "Sign out of this device"}
+          icon={<LogOut size={17} />}
           danger
         >
-          <Button
-            variant="outlined"
-            color="error"
+          <button
             onClick={handleSignOut}
-            sx={{
-              borderColor: '#FECACA',
-              color: '#B91C1C',
-              '&:hover': {
-                borderColor: '#DC2626',
-                color: '#B91C1C',
-                backgroundColor: '#FEF2F2',
-              },
-            }}
+            className="px-4 py-2 border border-red-300 text-red-700 font-semibold rounded-lg hover:bg-red-50 transition-colors"
           >
             {guestMode ? "Exit guest session" : "Sign out"}
-          </Button>
+          </button>
         </SectionCard>
 
         {/* Delete Account – Signed-in users only */}
@@ -375,64 +279,38 @@ const ProfilePage: React.FC = () => {
           <SectionCard
             title="Delete Account"
             subtitle="Permanently remove your account and all data"
-            icon={<DeleteIcon sx={{ fontSize: 17 }} />}
+            icon={<Trash2 size={17} />}
             danger
           >
             {deleteMsg && (
-              <Alert severity={deleteMsg.type} sx={{ mb: 2.5 }} onClose={() => setDeleteMsg(null)}>
+              <div className={`mb-5 p-3 rounded-lg text-sm ${deleteMsg.type === 'success' ? 'bg-green-50 border border-green-200 text-green-700' : 'bg-red-50 border border-red-200 text-red-700'}`}>
                 {deleteMsg.text}
-              </Alert>
+              </div>
             )}
-            <Typography sx={{ fontSize: '0.8125rem', color: '#6B7180', mb: 2 }}>
-              This action is <strong>irreversible.</strong> Type your email
-              address below to confirm.
-            </Typography>
-            <Stack spacing={2}>
-              <TextField
-                label={`Type "${user?.email}" to confirm`}
-                fullWidth
-                size="small"
+            <p className="text-xs text-[#6B7180] mb-4">
+              This action is <strong>irreversible.</strong> Type your email address below to confirm.
+            </p>
+            <div className="space-y-4">
+              <input
+                type="text"
                 value={deleteConfirm}
                 onChange={(e) => setDeleteConfirm(e.target.value)}
+                placeholder={`Type "${user?.email}" to confirm`}
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 autoComplete="off"
-                inputProps={{ 'data-lpignore': 'true', 'data-form-type': 'other' }}
-                sx={{
-                  '& .MuiOutlinedInput-root.Mui-focused fieldset': {
-                    borderColor: '#DC2626',
-                  },
-                  '& .MuiInputLabel-root.Mui-focused': {
-                    color: '#DC2626',
-                  },
-                }}
               />
-              <Box>
-                <Button
-                  variant="outlined"
-                  color="error"
-                  disabled={deleteLoading || deleteConfirm !== (user?.email ?? '')}
-                  onClick={handleDeleteAccount}
-                  sx={{
-                    borderColor: '#FECACA',
-                    color: '#B91C1C',
-                    '&:hover': {
-                      borderColor: '#DC2626',
-                      color: '#B91C1C',
-                      backgroundColor: '#FEF2F2',
-                    },
-                    '&.Mui-disabled': {
-                      borderColor: '#FECACA',
-                      color: '#FCA5A5',
-                    },
-                  }}
-                >
-                  {deleteLoading ? 'Deleting…' : 'Delete my account'}
-                </Button>
-              </Box>
-            </Stack>
+              <button
+                onClick={handleDeleteAccount}
+                disabled={deleteLoading || deleteConfirm !== (user?.email ?? '')}
+                className="px-4 py-2 border border-red-300 text-red-700 font-semibold rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {deleteLoading ? 'Deleting…' : 'Delete my account'}
+              </button>
+            </div>
           </SectionCard>
         )}
-      </Stack>
-    </Box>
+      </div>
+    </div>
   );
 };
 

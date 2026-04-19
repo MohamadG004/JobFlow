@@ -1,5 +1,4 @@
 import React from 'react';
-import { Box, Typography, Stack } from '@mui/material';
 
 interface PageHeaderProps {
   title: string;
@@ -8,30 +7,17 @@ interface PageHeaderProps {
 }
 
 const PageHeader: React.FC<PageHeaderProps> = ({ title, subtitle, action }) => (
-  <Box
-    sx={{
-      px: 3, py: 2.5,
-      bgcolor: 'background.paper',
-      borderBottom: '1px solid',
-      borderColor: 'divider',
-      flexShrink: 0,
-    }}
-  >
-    <Stack
-      direction={{ xs: 'column', sm: 'row' }}
-      alignItems={{ sm: 'center' }}
-      justifyContent="space-between"
-      spacing={2}
-    >
-      <Box>
-        <Typography variant="h5" fontWeight={800}>{title}</Typography>
+  <div className="px-6 py-5 bg-[var(--color-bg-paper)] border-b border-[var(--color-divider)] shrink-0">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <h2 className="text-xl font-extrabold text-[var(--color-text-primary)]">{title}</h2>
         {subtitle && (
-          <Typography variant="body2" color="text.secondary">{subtitle}</Typography>
+          <p className="text-sm text-[var(--color-text-secondary)] mt-1">{subtitle}</p>
         )}
-      </Box>
-      {action && <Box>{action}</Box>}
-    </Stack>
-  </Box>
+      </div>
+      {action && <div>{action}</div>}
+    </div>
+  </div>
 );
 
 export default PageHeader;

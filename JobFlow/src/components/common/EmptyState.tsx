@@ -1,6 +1,5 @@
 import React from 'react';
-import { Box, Typography, Button } from '@mui/material';
-import InboxRoundedIcon from '@mui/icons-material/InboxRounded';
+import { Inbox } from 'lucide-react';
 
 interface EmptyStateProps {
   title?: string;
@@ -17,24 +16,23 @@ const EmptyState: React.FC<EmptyStateProps> = ({
   onAction,
   icon,
 }) => (
-  <Box
-    sx={{
-      display: 'flex', flexDirection: 'column',
-      alignItems: 'center', justifyContent: 'center',
-      py: 8, px: 4, textAlign: 'center',
-    }}
-  >
-    <Box sx={{ mb: 2, color: 'text.disabled', opacity: 0.5 }}>
-      {icon ?? <InboxRoundedIcon sx={{ fontSize: 56 }} />}
-    </Box>
-    <Typography variant="h6" fontWeight={700} sx={{ mb: 0.5 }}>{title}</Typography>
-    <Typography variant="body2" color="text.secondary" sx={{ mb: 3, maxWidth: 320 }}>
+  <div className="flex flex-col items-center justify-center py-16 px-8 text-center">
+    <div className="mb-4 text-gray-400 opacity-50">
+      {icon ?? <Inbox size={56} />}
+    </div>
+    <h3 className="text-lg font-bold text-[var(--color-text-primary)] mb-1">{title}</h3>
+    <p className="text-sm text-[var(--color-text-secondary)] mb-6 max-w-[320px]">
       {description}
-    </Typography>
+    </p>
     {actionLabel && onAction && (
-      <Button variant="contained" onClick={onAction}>{actionLabel}</Button>
+      <button 
+        onClick={onAction}
+        className="px-6 py-2.5 bg-[var(--color-primary)] text-white font-semibold rounded-[var(--radius-lg)] hover:bg-[var(--color-primary-dark)] transition-colors"
+      >
+        {actionLabel}
+      </button>
     )}
-  </Box>
+  </div>
 );
 
 export default EmptyState;

@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import {
-  Box, TextField, Button, Typography, Link, Alert, Stack,
-} from '@mui/material';
-import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
-import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
-import SendRoundedIcon from '@mui/icons-material/SendRounded';
+import { ArrowLeft, Mail, Send } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 const ForgotPasswordPage: React.FC = () => {
@@ -30,162 +25,121 @@ const ForgotPasswordPage: React.FC = () => {
   };
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        bgcolor: '#FAFAF8',
-        p: 3,
-        position: 'relative',
-        overflow: 'hidden',
-      }}
+    <div
+      className="min-h-screen flex items-center justify-center bg-[#FAFAF8] p-6 relative overflow-hidden"
     >
       {/* Decorative blobs */}
-      <Box sx={{
-        position: 'absolute', top: '-5%', right: '-5%',
-        width: 400, height: 400, borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%)',
-        pointerEvents: 'none',
-      }} />
-      <Box sx={{
-        position: 'absolute', bottom: '-10%', left: '-5%',
-        width: 350, height: 350, borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(45,82,224,0.07) 0%, transparent 70%)',
-        pointerEvents: 'none',
-      }} />
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{ top: '-5%', right: '-5%', width: 400, height: 400, background: 'radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%)' }}
+      />
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{ bottom: '-10%', left: '-5%', width: 350, height: 350, background: 'radial-gradient(circle, rgba(45,82,224,0.07) 0%, transparent 70%)' }}
+      />
 
-      <Box
-        sx={{
-          width: '100%',
-          maxWidth: 400,
-          bgcolor: '#fff',
-          border: '1px solid #EEECE8',
-          borderRadius: 4,
-          p: { xs: 4, sm: 5 },
-          boxShadow: '0 4px 24px rgba(13,15,23,0.07), 0 1px 4px rgba(13,15,23,0.04)',
-          position: 'relative',
-          zIndex: 1,
-        }}
+      <div
+        className="w-full max-w-[400px] bg-white border border-[#EEECE8] rounded-2xl p-8 sm:p-10 relative z-10"
+        style={{ boxShadow: '0 4px 24px rgba(13,15,23,0.07), 0 1px 4px rgba(13,15,23,0.04)' }}
       >
-        <Link
-          component={RouterLink}
+        <RouterLink
           to="/login"
-          sx={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 0.5,
-            mb: 4,
-            color: '#6B7180',
-            textDecoration: 'none',
-            fontSize: '0.875rem',
-            fontWeight: 500,
-            transition: 'color 0.15s ease',
-            '&:hover': { color: '#0D0F17' },
-          }}
+          className="inline-flex items-center gap-1.5 mb-6 text-[#6B7180] no-underline text-sm font-medium hover:text-[#0D0F17] transition-colors"
         >
-          <ArrowBackRoundedIcon sx={{ fontSize: 16 }} />
+          <ArrowLeft className="w-4 h-4" />
           Back to sign in
-        </Link>
+        </RouterLink>
 
         {sent ? (
-          <Stack spacing={3} alignItems="center" textAlign="center">
-            <Box
-              sx={{
-                width: 60, height: 60, borderRadius: '14px',
-                background: 'linear-gradient(135deg, #EEF2FF 0%, #EDE9FE 100%)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '1.75rem',
-              }}
+          <div className="space-y-6 text-center">
+            <div
+              className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center text-2xl"
+              style={{ background: 'linear-gradient(135deg, #EEF2FF 0%, #EDE9FE 100%)' }}
             >
               ✉️
-            </Box>
-            <Box>
-              <Typography variant="h5" sx={{ fontFamily: '"Sora", sans-serif', fontWeight: 800, letterSpacing: '-0.02em', mb: 1 }}>
+            </div>
+            <div>
+              <h2
+                className="text-xl font-extrabold mb-2 text-[#0D0F17]"
+                style={{ fontFamily: 'Sora, sans-serif' }}
+              >
                 Email sent!
-              </Typography>
-              <Typography sx={{ color: '#6B7180', fontSize: '0.9375rem', lineHeight: 1.65 }}>
+              </h2>
+              <p className="text-[#6B7180] text-[0.9375rem] leading-relaxed">
                 We sent a reset link to{' '}
-                <Box component="span" sx={{ fontWeight: 600, color: '#0D0F17' }}>{email}</Box>.
+                <span className="font-semibold text-[#0D0F17]">{email}</span>.
                 Check your inbox and follow the instructions.
-              </Typography>
-            </Box>
-            <Alert
-              severity="success"
-              sx={{ width: '100%', textAlign: 'left' }}
-            >
+              </p>
+            </div>
+            <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm text-left">
               Reset link sent! If you don&apos;t see it, check your spam folder.
-            </Alert>
-            <Button
-              component={RouterLink}
+            </div>
+            <RouterLink
               to="/login"
-              variant="outlined"
-              fullWidth
-              size="large"
+              className="block w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
             >
               Back to sign in
-            </Button>
-          </Stack>
+            </RouterLink>
+          </div>
         ) : (
           <>
-            <Box sx={{ mb: 4 }}>
-              <Box
-                sx={{
-                  width: 52, height: 52, borderRadius: '12px', mb: 3,
-                  background: 'linear-gradient(135deg, #EEF2FF 0%, #EDE9FE 100%)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}
+            <div className="mb-6">
+              <div
+                className="w-13 h-13 rounded-xl mb-4 flex items-center justify-center"
+                style={{ background: 'linear-gradient(135deg, #EEF2FF 0%, #EDE9FE 100%)' }}
               >
-                <EmailRoundedIcon sx={{ color: '#2D52E0', fontSize: 24 }} />
-              </Box>
-              <Typography variant="h5" sx={{ fontFamily: '"Sora", sans-serif', fontWeight: 800, letterSpacing: '-0.02em', mb: 0.75 }}>
+                <Mail className="text-[var(--color-primary)] w-6 h-6" />
+              </div>
+              <h2
+                className="text-xl font-extrabold mb-2 text-[#0D0F17]"
+                style={{ fontFamily: 'Sora, sans-serif' }}
+              >
                 Reset your password
-              </Typography>
-              <Typography sx={{ color: '#6B7180', fontSize: '0.9375rem', lineHeight: 1.6 }}>
+              </h2>
+              <p className="text-[#6B7180] text-[0.9375rem] leading-relaxed">
                 Enter your email and we&apos;ll send you a link to reset your password.
-              </Typography>
-            </Box>
+              </p>
+            </div>
 
             {error && (
-              <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>
+              <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                {error}
+              </div>
             )}
 
-            <Box component="form" onSubmit={handleSubmit}>
-              <Stack spacing={2.5}>
-                <TextField
-                  label="Email address"
-                  type="email"
-                  fullWidth
-                  required
-                  autoFocus
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  autoComplete="email"
-                  InputProps={{
-                    startAdornment: (
-                      <Box component="span" sx={{ display: 'flex', mr: 1, color: '#9CA3AF' }}>
-                        <EmailRoundedIcon sx={{ fontSize: 18 }} />
-                      </Box>
-                    ),
-                  }}
-                />
-                <Button
+            <form onSubmit={handleSubmit}>
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-[#0D0F17] mb-1.5">Email address</label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                      type="email"
+                      required
+                      autoFocus
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      autoComplete="email"
+                      className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
+                      placeholder="you@example.com"
+                    />
+                  </div>
+                </div>
+
+                <button
                   type="submit"
-                  variant="contained"
-                  size="large"
-                  fullWidth
                   disabled={loading}
-                  startIcon={!loading && <SendRoundedIcon sx={{ fontSize: '1rem !important' }} />}
+                  className="w-full py-3 bg-[var(--color-primary)] text-white font-semibold rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {loading ? 'Sending…' : 'Send reset link'}
-                </Button>
-              </Stack>
-            </Box>
+                  {!loading && <Send className="w-4 h-4" />}
+                </button>
+              </div>
+            </form>
           </>
         )}
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 };
 

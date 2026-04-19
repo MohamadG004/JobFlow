@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { Box, CircularProgress } from '@mui/material';
+import { Loader2 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 interface ProtectedRouteProps {
@@ -13,9 +13,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <CircularProgress />
-      </Box>
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader2 className="w-8 h-8 animate-spin text-[var(--color-primary)]" />
+      </div>
     );
   }
 

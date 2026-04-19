@@ -1,9 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-  Dialog, DialogTitle, DialogContent, DialogActions,
-  TextField, Button, MenuItem, Stack, IconButton, Typography,
-} from '@mui/material';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import { X } from 'lucide-react';
 import type { Application, ApplicationInsert, ApplicationStatus } from '@/types';
 
 const STATUSES: ApplicationStatus[] = ['Applied', 'Interview', 'Offer', 'Rejected'];
@@ -58,7 +54,7 @@ const ApplicationFormDialog: React.FC<Props> = ({
   };
 
   const handleChange = (field: keyof ApplicationInsert) => (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
     if (errors[field]) setErrors((prev) => ({ ...prev, [field]: undefined }));
@@ -75,80 +71,109 @@ const ApplicationFormDialog: React.FC<Props> = ({
     }
   };
 
+  if (!open) return null;
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth PaperProps={{ sx: { borderRadius: 3 } }}>
-      <DialogTitle sx={{ pb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Typography variant="h6" fontWeight={700}>
-          {initialData ? 'Edit Application' : 'Add New Application'}
-        </Typography>
-        <IconButton onClick={onClose} size="small">
-          <CloseRoundedIcon />
-        </IconButton>
-      </DialogTitle>
-
-      <DialogContent sx={{ pt: 2 }}>
-        <Stack spacing={2.5}>
-          <TextField
-            label="Company Name"
-            fullWidth
-            value={form.company}
-            onChange={handleChange('company')}
-            error={!!errors.company}
-            helperText={errors.company}
-            autoFocus
-            placeholder="e.g. Google, Amazon, Stripe..."
-          />
-          <TextField
-            label="Role / Title"
-            fullWidth
-            value={form.role}
-            onChange={handleChange('role')}
-            error={!!errors.role}
-            helperText={errors.role}
-            placeholder="e.g. Senior Software Engineer"
-          />
-          <TextField
-            select
-            label="Status"
-            fullWidth
-            value={form.status}
-            onChange={handleChange('status')}
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+      
+      {/* Dialog */}
+      <div className="relative w-full max-w-md mx-4 bg-white rounded-2xl shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <h3 className="text-lg font-bold text-[#0D0F17]" style={{ fontFamily: 'Sora, sans-serif' }}>
+            {initialData ? 'Edit Application' : 'Add New Application'}
+          </h3>
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
           >
-            {STATUSES.map((s) => (
-              <MenuItem key={s} value={s}>{s}</MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            label="Date Applied"
-            type="date"
-            fullWidth
-            value={form.applied_date}
-            onChange={handleChange('applied_date')}
-            error={!!errors.applied_date}
-            helperText={errors.applied_date}
-            InputLabelProps={{ shrink: true }}
-          />
-          <TextField
-            label="Notes"
-            fullWidth
-            multiline
-            rows={3}
-            value={form.notes}
-            onChange={handleChange('notes')}
-            placeholder="Recruiter contact, next steps, salary range..."
-          />
-        </Stack>
-      </DialogContent>
+            <X size={20} />
+          </button>
+        </div>
 
-      <DialogActions sx={{ px: 3, pb: 3, gap: 1 }}>
-        <Button onClick={onClose} variant="outlined" color="inherit">
-          Cancel
-        </Button>
-        <Button onClick={handleSubmit} variant="contained" disabled={loading}>
-          {loading ? 'Saving...' : initialData ? 'Save Changes' : 'Add Application'}
-        </Button>
-      </DialogActions>
-    </Dialog>
+        {/* Content */}
+        <div className="p-6 space-y-5">
+          <div>
+            <label className="block text-sm font-medium text-[#0D0F17] mb-1.5">Company Name</label>
+            <input
+              type="text"
+              value={form.company}
+              onChange={handleChange('company')}
+              placeholder="e.g. Google, Amazon, Stripe..."
+              className={`w-full px-3 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all ${errors.company ? 'border-red-400' : 'border-gray-200'}`}
+              autoFocus
+            />
+            {errors.company && <p className="text-xs text-red-500 mt-1">{errors.company}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[#0D0F17] mb-1.5">Role / Title</label>
+            <input
+              type="text"
+              value={form.role}
+              onChange={handleChange('role')}
+              placeholder="e.g. Senior Software Engineer"
+              className={`w-full px-3 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all ${errors.role ? 'border-red-400' : 'border-gray-200'}`}
+            />
+            {errors.role && <p className="text-xs text-red-500 mt-1">{errors.role}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[#0D0F17] mb-1.5">Status</label>
+            <select
+              value={form.status}
+              onChange={handleChange('status')}
+              className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all bg-white"
+            >
+              {STATUSES.map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[#0D0F17] mb-1.5">Date Applied</label>
+            <input
+              type="date"
+              value={form.applied_date}
+              onChange={handleChange('applied_date')}
+              className={`w-full px-3 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all ${errors.applied_date ? 'border-red-400' : 'border-gray-200'}`}
+            />
+            {errors.applied_date && <p className="text-xs text-red-500 mt-1">{errors.applied_date}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[#0D0F17] mb-1.5">Notes</label>
+            <textarea
+              value={form.notes}
+              onChange={handleChange('notes')}
+              placeholder="Recruiter contact, next steps, salary range..."
+              rows={3}
+              className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all resize-none"
+            />
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center justify-end gap-2 px-6 pb-6">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 border border-gray-200 text-gray-600 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSubmit}
+            disabled={loading}
+            className="px-4 py-2 bg-[var(--color-primary)] text-white font-semibold rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors disabled:opacity-50"
+          >
+            {loading ? 'Saving...' : initialData ? 'Save Changes' : 'Add Application'}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Chip } from '@mui/material';
 import type { ApplicationStatus } from '@/types';
 
 const STATUS_CONFIG: Record<ApplicationStatus, { color: string; bg: string }> = {
@@ -16,18 +15,19 @@ interface StatusChipProps {
 
 const StatusChip: React.FC<StatusChipProps> = ({ status, size = 'small' }) => {
   const cfg = STATUS_CONFIG[status];
+  const sizeClasses = size === 'small' ? 'text-xs px-2 py-0.5' : 'text-sm px-3 py-1';
+  
   return (
-    <Chip
-      label={status}
-      size={size}
-      sx={{
-        fontWeight: 700,
-        fontSize: '0.72rem',
-        color: cfg.color,
-        bgcolor: cfg.bg,
-        border: `1px solid ${cfg.color}30`,
+    <span
+      className={`inline-flex items-center font-bold rounded-full border ${sizeClasses}`}
+      style={{ 
+        color: cfg.color, 
+        backgroundColor: cfg.bg,
+        borderColor: `${cfg.color}30`,
       }}
-    />
+    >
+      {status}
+    </span>
   );
 };
 

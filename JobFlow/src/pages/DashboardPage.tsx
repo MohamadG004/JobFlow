@@ -1,15 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import {
-  Box, Typography, Button, CircularProgress, Alert,
-  Snackbar, Stack, TextField, InputAdornment,
-  Dialog, DialogTitle, DialogContent, DialogActions,
-} from '@mui/material';
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import EditRoundedIcon from '@mui/icons-material/EditRounded';
-import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
-import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
-import InboxRoundedIcon from '@mui/icons-material/InboxRounded';
+import { Plus, Search, Edit2, Trash2, Calendar, Inbox } from 'lucide-react';
 import {
   DndContext, DragEndEvent, PointerSensor, useSensor, useSensors,
   DragOverlay, DragStartEvent, DragOverEvent, closestCorners,
@@ -54,119 +44,55 @@ const AppCard: React.FC<CardProps> = ({ app, onEdit, onDelete }) => {
   });
 
   return (
-    <Box
+    <div
       ref={setNodeRef}
       style={{
         transform: CSS.Transform.toString(transform),
         transition,
         opacity: isDragging ? 0 : 1,
+        borderLeftColor: col.color,
       }}
       {...attributes}
       {...listeners}
-      sx={{
-        bgcolor: '#fff',
-        borderRadius: '12px',
-        border: '1px solid #EEECE8',
-        borderLeft: `3px solid ${col.color}`,
-        p: 2,
-        cursor: 'grab',
-        userSelect: 'none',
-        position: 'relative',
-        overflow: 'hidden',
-        transition: 'box-shadow 0.18s ease, transform 0.18s ease',
-        '&:hover': {
-          boxShadow: '0 4px 16px rgba(13,15,23,0.08)',
-          transform: 'translateY(-1px)',
-          '& .card-actions': { opacity: 1 },
-        },
-        '&:active': { cursor: 'grabbing', transform: 'translateY(0)' },
-      }}
+      className="bg-white rounded-xl border border-[#EEECE8] border-l-3 p-4 cursor-grab select-none relative overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
     >
       {/* Action buttons (revealed on hover) */}
-      <Stack
-        className="card-actions"
-        direction="row"
-        spacing={0.25}
-        sx={{
-          position: 'absolute',
-          top: 8, right: 8,
-          opacity: 0,
-          transition: 'opacity 0.15s ease',
-          bgcolor: 'rgba(255,255,255,0.95)',
-          backdropFilter: 'blur(4px)',
-          borderRadius: '8px',
-          border: '1px solid #EEECE8',
-          p: '2px',
-        }}
-      >
-        <Box
-          component="button"
+      <div className="absolute top-2 right-2 flex gap-0.5 p-0.5 bg-white/95 backdrop-blur-sm rounded-lg border border-[#EEECE8] opacity-0 hover:opacity-100 transition-opacity">
+        <button
           onClick={(e) => { e.stopPropagation(); onEdit(app); }}
-          sx={{
-            border: 'none', bgcolor: 'transparent', cursor: 'pointer',
-            p: '4px', borderRadius: '6px', color: '#9CA3AF', display: 'flex',
-            transition: 'all 0.15s ease',
-            '&:hover': { color: '#2D52E0', bgcolor: '#EEF2FF' },
-          }}
+          className="p-1 rounded-md text-[#9CA3AF] hover:text-[#2D52E0] hover:bg-[#EEF2FF] transition-all"
         >
-          <EditRoundedIcon sx={{ fontSize: 14 }} />
-        </Box>
-        <Box
-          component="button"
+          <Edit2 size={14} />
+        </button>
+        <button
           onClick={(e) => { e.stopPropagation(); onDelete(app.id); }}
-          sx={{
-            border: 'none', bgcolor: 'transparent', cursor: 'pointer',
-            p: '4px', borderRadius: '6px', color: '#9CA3AF', display: 'flex',
-            transition: 'all 0.15s ease',
-            '&:hover': { color: '#DC2626', bgcolor: '#FEF2F2' },
-          }}
+          className="p-1 rounded-md text-[#9CA3AF] hover:text-[#DC2626] hover:bg-[#FEF2F2] transition-all"
         >
-          <DeleteRoundedIcon sx={{ fontSize: 14 }} />
-        </Box>
-      </Stack>
+          <Trash2 size={14} />
+        </button>
+      </div>
 
       {/* Card content */}
-      <Box sx={{ pr: 4 }}>
-        <Typography
-          sx={{
-            fontFamily: '"Sora", sans-serif',
-            fontWeight: 700,
-            fontSize: '0.875rem',
-            color: '#0D0F17',
-            mb: 0.25,
-            lineHeight: 1.3,
-          }}
-          noWrap
-        >
+      <div className="pr-6">
+        <p className="font-bold text-sm text-[#0D0F17] mb-0.5 line-clamp-1" style={{ fontFamily: 'Sora, sans-serif' }}>
           {app.company}
-        </Typography>
-        <Typography
-          sx={{ fontSize: '0.8rem', color: '#6B7180', fontWeight: 400 }}
-          noWrap
-        >
-          {app.role}
-        </Typography>
-      </Box>
+        </p>
+        <p className="text-xs text-[#6B7180] line-clamp-1">{app.role}</p>
+      </div>
 
       {app.notes && (
-        <Typography
-          sx={{
-            mt: 1.25, fontSize: '0.775rem', color: '#9CA3AF', lineHeight: 1.5,
-            display: '-webkit-box', WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical', overflow: 'hidden',
-          }}
-        >
+        <p className="mt-2.5 text-xs text-[#9CA3AF] line-clamp-2">
           {app.notes}
-        </Typography>
+        </p>
       )}
 
-      <Stack direction="row" alignItems="center" spacing={0.5} sx={{ mt: 1.5 }}>
-        <CalendarTodayRoundedIcon sx={{ fontSize: 11, color: '#C4C0BC' }} />
-        <Typography sx={{ fontSize: '0.72rem', color: '#C4C0BC', fontWeight: 500 }}>
+      <div className="flex items-center gap-1 mt-3">
+        <Calendar size={11} className="text-[#C4C0BC]" />
+        <span className="text-[0.72rem] text-[#C4C0BC] font-medium">
           {format(new Date(app.applied_date), 'MMM d, yyyy')}
-        </Typography>
-      </Stack>
-    </Box>
+        </span>
+      </div>
+    </div>
   );
 };
 
@@ -188,69 +114,41 @@ const KanbanColumn: React.FC<ColumnProps> = ({
   const { setNodeRef } = useDroppable({ id: colId });
 
   return (
-    <Box
-      sx={{
-        width: { xs: '82vw', sm: 300 },
-        flexShrink: 0,
-        borderRadius: '16px',
-        bgcolor: bgColor,
-        border: `1px solid ${color}1A`,
-        display: 'flex', flexDirection: 'column', gap: 1.5,
-        maxHeight: 'calc(100vh - 144px)',
-        overflow: 'hidden',
-      }}
+    <div
+      className="w-[82vw] sm:w-[300px] shrink-0 rounded-2xl flex flex-col gap-3 max-h-[calc(100vh-144px)] overflow-hidden"
+      style={{ backgroundColor: bgColor, border: `1px solid ${color}1A` }}
     >
       {/* Column header */}
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        sx={{ px: 2, pt: 2, pb: 0 }}
-      >
-        <Stack direction="row" alignItems="center" spacing={1}>
-          <Box sx={{ width: 7, height: 7, borderRadius: '50%', bgcolor: color }} />
-          <Typography sx={{ fontFamily: '"Sora",sans-serif', fontWeight: 700, fontSize: '0.8rem', color, letterSpacing: '0.01em' }}>
+      <div className="flex items-center justify-between px-4 pt-4 pb-0">
+        <div className="flex items-center gap-2">
+          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: color }} />
+          <span className="text-xs font-bold" style={{ color, fontFamily: 'Sora, sans-serif', letterSpacing: '0.01em' }}>
             {label}
-          </Typography>
-          <Box
-            sx={{
-              minWidth: 20, height: 18, px: 0.75,
-              bgcolor: `${color}18`,
-              borderRadius: '5px',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}
+          </span>
+          <div
+            className="min-w-5 h-4.5 px-1.5 rounded-md flex items-center justify-center"
+            style={{ backgroundColor: `${color}18` }}
           >
-            <Typography sx={{ fontSize: '0.7rem', fontWeight: 700, color, lineHeight: 1 }}>
+            <span className="text-[0.7rem] font-bold" style={{ color, lineHeight: 1 }}>
               {applications.length}
-            </Typography>
-          </Box>
-        </Stack>
+            </span>
+          </div>
+        </div>
 
-        <Box
-          component="button"
+        <button
           onClick={() => onAdd(colId)}
           title={`Add to ${label}`}
-          sx={{
-            border: `1px solid ${color}33`,
-            bgcolor: 'rgba(255,255,255,0.6)',
-            cursor: 'pointer',
-            color, p: '3px', borderRadius: '7px', display: 'flex',
-            transition: 'all 0.15s ease',
-            '&:hover': { bgcolor: 'rgba(255,255,255,0.9)', boxShadow: `0 2px 6px ${color}22` },
-          }}
+          className="p-1 rounded-md border transition-all hover:bg-white hover:shadow-md"
+          style={{ borderColor: `${color}33`, color, backgroundColor: 'rgba(255,255,255,0.6)' }}
         >
-          <AddRoundedIcon sx={{ fontSize: 16 }} />
-        </Box>
-      </Stack>
+          <Plus size={16} />
+        </button>
+      </div>
 
       {/* Cards area */}
-      <Box
+      <div
         ref={setNodeRef}
-        sx={{
-          overflowY: 'auto',
-          display: 'flex', flexDirection: 'column', gap: 1.5,
-          px: 1.5, pb: 1.5, flex: 1,
-        }}
+        className="flex-1 overflow-y-auto flex flex-col gap-3 px-3 pb-3"
       >
         <SortableContext items={applications.map((a) => a.id)} strategy={verticalListSortingStrategy}>
           {applications.map((app) => (
@@ -259,22 +157,15 @@ const KanbanColumn: React.FC<ColumnProps> = ({
         </SortableContext>
 
         {applications.length === 0 && (
-          <Box
-            sx={{
-              flex: 1,
-              display: 'flex', flexDirection: 'column',
-              alignItems: 'center', justifyContent: 'center',
-              py: 5, gap: 1,
-            }}
-          >
-            <InboxRoundedIcon sx={{ fontSize: 28, color: `${color}40` }} />
-            <Typography sx={{ fontSize: '0.78rem', color: `${color}60`, fontWeight: 500 }}>
+          <div className="flex-1 flex flex-col items-center justify-center py-8 gap-2">
+            <Inbox size={28} style={{ color: `${color}40` }} />
+            <span className="text-xs font-medium" style={{ color: `${color}60` }}>
               Drop here
-            </Typography>
-          </Box>
+            </span>
+          </div>
         )}
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 };
 
@@ -429,77 +320,56 @@ const DashboardPage: React.FC = () => {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
-        <CircularProgress size={28} thickness={3} sx={{ color: '#2D52E0' }} />
-      </Box>
+      <div className="flex justify-center items-center h-[80vh]">
+        <div className="w-7 h-7 border-3 border-[#2D52E0] border-t-transparent rounded-full animate-spin" />
+      </div>
     );
   }
 
   return (
-    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+    <div className="h-screen flex flex-col overflow-hidden">
       {/* Header */}
-      <Box
-        sx={{
-          px: { xs: 2.5, sm: 3 },
-          py: 2,
-          bgcolor: '#fff',
-          borderBottom: '1px solid #EEECE8',
-          flexShrink: 0,
-        }}
-      >
-        <Stack
-          direction={{ xs: 'column', sm: 'row' }}
-          alignItems={{ sm: 'center' }}
-          justifyContent="space-between"
-          spacing={2}
-        >
-          <Box>
-            <Typography variant="h5" sx={{ fontFamily: '"Sora", sans-serif', fontWeight: 800, letterSpacing: '-0.02em' }}>
+      <div className="px-4 sm:px-6 py-4 bg-white border-b border-[#EEECE8] shrink-0">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h2 className="text-xl font-extrabold text-[#0D0F17]" style={{ fontFamily: 'Sora, sans-serif', letterSpacing: '-0.02em' }}>
               Job Board
-            </Typography>
-            <Typography sx={{ fontSize: '0.8125rem', color: '#6B7180', mt: 0.25 }}>
+            </h2>
+            <p className="text-[0.8125rem] text-[#6B7180] mt-1">
               {applications.length} application{applications.length !== 1 ? 's' : ''} tracked
-            </Typography>
-          </Box>
+            </p>
+          </div>
 
-          <Stack direction="row" spacing={1.5} alignItems="center">
-            <TextField
-              size="small"
-              placeholder="Search company or role"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchRoundedIcon sx={{ fontSize: 17, color: '#9CA3AF' }} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                width: { xs: '100%', sm: 230 },
-                '& .MuiOutlinedInput-root': { height: 38 },
-              }}
-            />
-            <Button
-              variant="contained"
-              startIcon={<AddRoundedIcon />}
+          <div className="flex items-center gap-3">
+            <div className="relative w-full sm:w-[230px]">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+              <input
+                type="text"
+                placeholder="Search company or role"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full h-9 pl-9 pr-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+              />
+            </div>
+            <button
               onClick={() => handleAdd('Applied')}
-              sx={{ whiteSpace: 'nowrap', height: 38, px: 2 }}
+              className="h-9 px-4 bg-[var(--color-primary)] text-white font-semibold rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors whitespace-nowrap flex items-center gap-1.5"
             >
+              <Plus size={16} />
               Add
-            </Button>
-          </Stack>
-        </Stack>
-      </Box>
+            </button>
+          </div>
+        </div>
+      </div>
 
       {error && (
-        <Alert severity="error" sx={{ mx: 3, mt: 2, borderRadius: '10px' }}>
+        <div className="mx-6 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
           {error}
-        </Alert>
+        </div>
       )}
 
       {/* Kanban Board */}
-      <Box sx={{ flex: 1, overflow: 'auto', p: { xs: 2, sm: 3 } }}>
+      <div className="flex-1 overflow-auto p-4 sm:p-6">
         <DndContext
           sensors={sensors}
           collisionDetection={closestCorners}
@@ -507,7 +377,7 @@ const DashboardPage: React.FC = () => {
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
         >
-          <Stack direction="row" spacing={2} sx={{ minHeight: '100%', alignItems: 'flex-start' }}>
+          <div className="flex gap-4 min-h-full items-start">
             {COLUMNS.map((col) => (
               <KanbanColumn
                 key={col.id}
@@ -521,25 +391,17 @@ const DashboardPage: React.FC = () => {
                 onDelete={handleDelete}
               />
             ))}
-          </Stack>
+          </div>
 
           <DragOverlay dropAnimation={{ duration: 180, easing: 'ease' }}>
             {activeApp && (
-              <Box
-                sx={{
-                  opacity: 0.96,
-                  transform: 'rotate(1.5deg) scale(1.02)',
-                  boxShadow: '0 12px 40px rgba(13,15,23,0.16)',
-                  borderRadius: '12px',
-                  cursor: 'grabbing',
-                }}
-              >
+              <div className="opacity-96 rotate-3 scale-[1.02] shadow-xl rounded-xl cursor-grabbing">
                 <AppCard app={activeApp} onEdit={() => {}} onDelete={() => {}} />
-              </Box>
+              </div>
             )}
           </DragOverlay>
         </DndContext>
-      </Box>
+      </div>
 
       {/* Dialog */}
       <ApplicationFormDialog
@@ -550,88 +412,40 @@ const DashboardPage: React.FC = () => {
         defaultStatus={defaultStatus}
       />
 
-      {/* Delete Confirmation Dialog */}
-      <Dialog
-        open={confirmDialog.open}
-        onClose={() => setConfirmDialog({ open: false, appId: null })}
-        PaperProps={{
-          sx: {
-            borderRadius: '16px',
-            p: 1,
-            maxWidth: 380,
-            width: '100%',
-            boxShadow: '0 24px 64px rgba(13,15,23,0.14)',
-          },
-        }}
-      >
-        <DialogTitle
-          sx={{
-            fontFamily: '"Sora", sans-serif',
-            fontWeight: 700,
-            fontSize: '1rem',
-            color: '#0D0F17',
-            pb: 0.5,
-          }}
-        >
-          Delete application?
-        </DialogTitle>
-        <DialogContent sx={{ pb: 1 }}>
-          <Typography sx={{ fontSize: '0.875rem', color: '#6B7180', lineHeight: 1.6 }}>
-            This action can't be undone. The application will be permanently removed from your board.
-          </Typography>
-        </DialogContent>
-        <DialogActions sx={{ px: 2.5, pb: 2, gap: 1 }}>
-          <Button
-            onClick={() => setConfirmDialog({ open: false, appId: null })}
-            variant="outlined"
-            sx={{
-              borderRadius: '9px',
-              textTransform: 'none',
-              fontWeight: 600,
-              fontSize: '0.875rem',
-              borderColor: '#EEECE8',
-              color: '#6B7180',
-              '&:hover': { borderColor: '#C4C0BC', bgcolor: '#FAFAF9', color: '#6B7180' },
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleConfirmDelete}
-            variant="contained"
-            sx={{
-              borderRadius: '9px',
-              textTransform: 'none',
-              fontWeight: 600,
-              fontSize: '0.875rem',
-              background: '#DC2626',
-              boxShadow: 'none',
-              '&:hover': { background: '#B91C1C', boxShadow: 'none' },
-            }}
-          >
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {/* Confirm Dialog */}
+      {confirmDialog.open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setConfirmDialog({ open: false, appId: null })} />
+          <div className="relative bg-white rounded-xl shadow-xl max-w-sm w-full mx-4 p-6">
+            <h3 className="text-lg font-bold text-[#0D0F17] mb-2">Delete Application</h3>
+            <p className="text-[#6B7180] mb-6">Are you sure you want to delete this application? This action cannot be undone.</p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setConfirmDialog({ open: false, appId: null })}
+                className="px-4 py-2 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                className="px-4 py-2 bg-[var(--color-error)] text-white font-semibold rounded-lg hover:bg-[var(--color-error-dark)] transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
-      <Snackbar
-        open={snackbar.open}
-        message={snackbar.message}
-        autoHideDuration={2800}
-        onClose={() => setSnackbar((s) => ({ ...s, open: false }))}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        ContentProps={{
-          sx: {
-            bgcolor: '#0D0F17',
-            color: '#fff',
-            borderRadius: '10px',
-            fontSize: '0.875rem',
-            fontWeight: 500,
-            boxShadow: '0 8px 24px rgba(13,15,23,0.20)',
-          },
-        }}
-      />
-    </Box>
+      {/* Snackbar */}
+      {snackbar.open && (
+        <div className="fixed bottom-6 right-6 z-50">
+          <div className="px-4 py-3 bg-[#0D0F17] text-white rounded-lg shadow-lg text-sm">
+            {snackbar.message}
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

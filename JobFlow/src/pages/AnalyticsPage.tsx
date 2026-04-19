@@ -1,19 +1,11 @@
 import React, { useMemo } from 'react';
 import {
-  Box, Typography, Grid, Card, CardContent,
-  Stack, CircularProgress,
-} from '@mui/material';
-import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, PieChart, Pie, Cell, Legend,
 } from 'recharts';
 import { useApplications } from '@/hooks/useApplications';
 import { computeAnalytics } from '@/utils/analytics';
-import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded';
-import WorkRoundedIcon from '@mui/icons-material/WorkRounded';
-import EmojiEventsRoundedIcon from '@mui/icons-material/EmojiEventsRounded';
-import InsightsRoundedIcon from '@mui/icons-material/InsightsRounded';
-import BarChartIcon from '@mui/icons-material/BarChart';
+import { TrendingUp, Briefcase, Trophy, BarChart3, Loader2 } from 'lucide-react';
 
 // ── Stat Card ─────────────────────────────────────────────────────────────────
 interface StatCardProps {
@@ -26,51 +18,32 @@ interface StatCardProps {
 }
 
 const StatCard: React.FC<StatCardProps> = ({ icon, label, value, color, bgColor, sub }) => (
-  <Card sx={{ height: '100%', transition: 'box-shadow 0.2s ease, transform 0.2s ease', '&:hover': { boxShadow: '0 8px 24px rgba(13,15,23,0.09)', transform: 'translateY(-2px)' } }}>
-    <CardContent sx={{ p: 2.5 }}>
-      <Stack direction="row" alignItems="flex-start" justifyContent="space-between">
-        <Box sx={{ flex: 1, minWidth: 0 }}>
-          <Typography sx={{ fontSize: '0.78rem', fontWeight: 600, color: '#6B7180', mb: 1, letterSpacing: '0.02em', textTransform: 'uppercase' }}>
-            {label}
-          </Typography>
-          <Typography sx={{ fontFamily: '"Sora", sans-serif', fontWeight: 800, fontSize: '2rem', color, lineHeight: 1, letterSpacing: '-0.03em' }}>
-            {value}
-          </Typography>
-          {sub && (
-            <Typography sx={{ fontSize: '0.75rem', color: '#9CA3AF', mt: 0.75 }}>
-              {sub}
-            </Typography>
-          )}
-        </Box>
-        <Box
-          sx={{
-            width: 42, height: 42, borderRadius: '11px', flexShrink: 0,
-            bgcolor: bgColor,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}
-        >
-          <Box sx={{ color, display: 'flex', fontSize: '1.2rem' }}>{icon}</Box>
-        </Box>
-      </Stack>
-    </CardContent>
-  </Card>
+  <div className="h-full rounded-xl border border-[#EEECE8] bg-white p-5 transition-all hover:shadow-lg hover:-translate-y-0.5">
+    <div className="flex items-start justify-between">
+      <div className="flex-1 min-w-0">
+        <p className="text-xs font-semibold text-[#6B7180] mb-1 uppercase tracking-wide">{label}</p>
+        <p className="text-3xl font-extrabold" style={{ color, fontFamily: 'Sora, sans-serif', letterSpacing: '-0.03em', lineHeight: 1 }}>
+          {value}
+        </p>
+        {sub && <p className="text-xs text-[#9CA3AF] mt-2">{sub}</p>}
+      </div>
+      <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: bgColor }}>
+        <span style={{ color }}>{icon}</span>
+      </div>
+    </div>
+  </div>
 );
 
 // ── Custom Tooltip ────────────────────────────────────────────────────────────
 const CustomBarTooltip: React.FC<any> = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <Box
-        sx={{
-          bgcolor: '#0D0F17', color: '#fff', borderRadius: '10px',
-          px: 2, py: 1.5, boxShadow: '0 8px 24px rgba(13,15,23,0.20)',
-        }}
-      >
-        <Typography sx={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', mb: 0.25 }}>{label}</Typography>
-        <Typography sx={{ fontFamily: '"Sora",sans-serif', fontWeight: 800, fontSize: '1.1rem' }}>
-          {payload[0].value} <Box component="span" sx={{ fontSize: '0.75rem', fontWeight: 400, opacity: 0.6 }}>apps</Box>
-        </Typography>
-      </Box>
+      <div className="bg-[#0D0F17] text-white rounded-lg px-3 py-2 shadow-xl" style={{ boxShadow: '0 8px 24px rgba(13,15,23,0.20)' }}>
+        <p className="text-xs text-white/50 mb-0.5">{label}</p>
+        <p className="text-lg font-extrabold">
+          {payload[0].value} <span className="text-xs font-normal opacity-60">apps</span>
+        </p>
+      </div>
     );
   }
   return null;
@@ -86,42 +59,26 @@ const StatusRowCard: React.FC<{
   const pct = total > 0 ? Math.round((value / total) * 100) : 0;
 
   return (
-    <Box
-      sx={{
-        flex: 1,
-        p: 2.5, borderRadius: '12px',
-        bgcolor: `${color}07`,
-        border: `1px solid ${color}20`,
-        transition: 'all 0.18s ease',
-        '&:hover': { bgcolor: `${color}11`, borderColor: `${color}35` },
-      }}
+    <div
+      className="flex-1 p-5 rounded-xl border transition-all hover:border-opacity-60"
+      style={{ backgroundColor: `${color}07`, borderColor: `${color}20` }}
     >
-      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1.5 }}>
-        <Stack direction="row" spacing={0.75} alignItems="center">
-          <Box sx={{ width: 7, height: 7, borderRadius: '50%', bgcolor: color }} />
-          <Typography sx={{ fontWeight: 700, fontSize: '0.8rem', color }}>
-            {name}
-          </Typography>
-        </Stack>
-        <Box
-          sx={{
-            px: 1, py: 0.25,
-            bgcolor: `${color}18`, borderRadius: '6px',
-          }}
-        >
-          <Typography sx={{ fontWeight: 700, fontSize: '0.72rem', color }}>
-            {pct}%
-          </Typography>
-        </Box>
-      </Stack>
-      <Typography sx={{ fontFamily: '"Sora",sans-serif', fontWeight: 800, fontSize: '1.75rem', color: '#0D0F17', lineHeight: 1, letterSpacing: '-0.03em' }}>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-1.5">
+          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: color }} />
+          <span className="text-xs font-bold" style={{ color }}>{name}</span>
+        </div>
+        <span className="px-2 py-0.5 rounded-md text-xs font-bold" style={{ backgroundColor: `${color}18`, color }}>
+          {pct}%
+        </span>
+      </div>
+      <p className="text-2xl font-extrabold text-[#0D0F17]" style={{ fontFamily: 'Sora, sans-serif', letterSpacing: '-0.03em', lineHeight: 1 }}>
         {value}
-      </Typography>
-      {/* Progress bar */}
-      <Box sx={{ mt: 1.5, height: 3, borderRadius: '2px', bgcolor: `${color}18`, overflow: 'hidden' }}>
-        <Box sx={{ width: `${pct}%`, height: '100%', bgcolor: color, borderRadius: '2px', transition: 'width 0.8s ease' }} />
-      </Box>
-    </Box>
+      </p>
+      <div className="mt-3 h-0.75 rounded-sm" style={{ backgroundColor: `${color}18`, overflow: 'hidden' }}>
+        <div className="h-full rounded-sm transition-all" style={{ width: `${pct}%`, backgroundColor: color }} />
+      </div>
+    </div>
   );
 };
 
@@ -133,197 +90,175 @@ const AnalyticsPage: React.FC = () => {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
-        <CircularProgress size={28} thickness={3} sx={{ color: '#2D52E0' }} />
-      </Box>
+      <div className="flex items-center justify-center h-[80vh]">
+        <Loader2 className="w-7 h-7 text-[var(--color-primary)] animate-spin" />
+      </div>
     );
   }
 
   return (
-    <Box sx={{ p: { xs: 2.5, md: 4 }, maxWidth: 1200 }}>
+    <div className="p-4 md:p-8 max-w-[1200px]">
       {/* Header */}
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h5" sx={{ fontFamily: '"Sora", sans-serif', fontWeight: 800, letterSpacing: '-0.02em', mb: 0.5 }}>
+      <div className="mb-6">
+        <h2 className="text-xl font-extrabold text-[#0D0F17] mb-1" style={{ fontFamily: 'Sora, sans-serif', letterSpacing: '-0.02em' }}>
           Analytics
-        </Typography>
-        <Typography sx={{ color: '#6B7180', fontSize: '0.9rem' }}>
-          Your job search at a glance
-        </Typography>
-      </Box>
+        </h2>
+        <p className="text-sm text-[#6B7180]">Your job search at a glance</p>
+      </div>
 
       {/* KPI Cards */}
-      <Grid container spacing={2.5} sx={{ mb: 3.5 }}>
-        <Grid item xs={6} lg={3}>
-          <StatCard
-            icon={<WorkRoundedIcon sx={{ fontSize: 20 }} />}
-            label="Total"
-            value={analytics.totalApplications}
-            color="#2D52E0"
-            bgColor="#EEF2FF"
-          />
-        </Grid>
-        <Grid item xs={6} lg={3}>
-          <StatCard
-            icon={<InsightsRoundedIcon sx={{ fontSize: 20 }} />}
-            label="Active"
-            value={analytics.activeApplications}
-            color="#C27803"
-            bgColor="#FFFBEB"
-            sub="Applied + Interview"
-          />
-        </Grid>
-        <Grid item xs={6} lg={3}>
-          <StatCard
-            icon={<EmojiEventsRoundedIcon sx={{ fontSize: 20 }} />}
-            label="Offers"
-            value={analytics.offersReceived}
-            color="#047857"
-            bgColor="#ECFDF5"
-            sub={analytics.offersReceived > 0 ? "Congratulations!" : "You got this!"}
-          />
-        </Grid>
-        <Grid item xs={6} lg={3}>
-          <StatCard
-            icon={<TrendingUpRoundedIcon sx={{ fontSize: 20 }} />}
-            label="Interview Rate"
-            value={`${analytics.interviewRate}%`}
-            color="#7C3AED"
-            bgColor="#F5F3FF"
-          />
-        </Grid>
-      </Grid>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <StatCard
+          icon={<Briefcase size={20} />}
+          label="Total"
+          value={analytics.totalApplications}
+          color="#2D52E0"
+          bgColor="#EEF2FF"
+        />
+        <StatCard
+          icon={<TrendingUp size={20} />}
+          label="Active"
+          value={analytics.activeApplications}
+          color="#C27803"
+          bgColor="#FFFBEB"
+          sub="Applied + Interview"
+        />
+        <StatCard
+          icon={<Trophy size={20} />}
+          label="Offers"
+          value={analytics.offersReceived}
+          color="#047857"
+          bgColor="#ECFDF5"
+          sub={analytics.offersReceived > 0 ? "Congratulations!" : "You got this!"}
+        />
+        <StatCard
+          icon={<BarChart3 size={20} />}
+          label="Interview Rate"
+          value={`${analytics.interviewRate}%`}
+          color="#7C3AED"
+          bgColor="#F5F3FF"
+        />
+      </div>
 
-      <Grid container spacing={2.5}>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
         {/* Bar chart */}
-        <Grid item xs={12} lg={7}>
-          <Card sx={{ height: '100%' }}>
-            <CardContent sx={{ p: { xs: 2.5, sm: 3 } }}>
-              <Box sx={{ mb: 3 }}>
-                <Typography sx={{ fontFamily: '"Sora",sans-serif', fontWeight: 700, fontSize: '0.9375rem', mb: 0.25 }}>
-                  Applications per Week
-                </Typography>
-                <Typography sx={{ fontSize: '0.8rem', color: '#9CA3AF' }}>Last 8 weeks</Typography>
-              </Box>
-              <ResponsiveContainer width="100%" height={260}>
-                <BarChart
-                  data={analytics.weeklyApplications}
-                  margin={{ top: 4, right: 4, left: -24, bottom: 0 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#F0EDE8" vertical={false} />
-                  <XAxis
-                    dataKey="week"
-                    tick={{ fontSize: 11, fill: '#C4C0BC', fontFamily: '"DM Sans",sans-serif' }}
-                    axisLine={false}
-                    tickLine={false}
-                  />
-                  <YAxis
-                    allowDecimals={false}
-                    tick={{ fontSize: 11, fill: '#C4C0BC', fontFamily: '"DM Sans",sans-serif' }}
-                    axisLine={false}
-                    tickLine={false}
-                  />
-                  <Tooltip content={<CustomBarTooltip />} cursor={{ fill: 'rgba(45,82,224,0.04)' }} />
-                  <Bar
-                    dataKey="count"
-                    fill="url(#barGradient)"
-                    radius={[6, 6, 0, 0]}
-                    name="Applications"
-                    maxBarSize={40}
-                  />
-                  <defs>
-                    <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#2D52E0" stopOpacity={0.9} />
-                      <stop offset="100%" stopColor="#4A3FDB" stopOpacity={0.7} />
-                    </linearGradient>
-                  </defs>
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </Grid>
+        <div className="lg:col-span-7">
+          <div className="h-full rounded-xl border border-[#EEECE8] bg-white p-5 md:p-6">
+            <div className="mb-4">
+              <h3 className="text-sm font-bold text-[#0D0F17] mb-0.5" style={{ fontFamily: 'Sora, sans-serif' }}>Applications per Week</h3>
+              <p className="text-xs text-[#9CA3AF]">Last 8 weeks</p>
+            </div>
+            <ResponsiveContainer width="100%" height={260}>
+              <BarChart
+                data={analytics.weeklyApplications}
+                margin={{ top: 4, right: 4, left: -24, bottom: 0 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#F0EDE8" vertical={false} />
+                <XAxis
+                  dataKey="week"
+                  tick={{ fontSize: 11, fill: '#C4C0BC', fontFamily: '"DM Sans",sans-serif' }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <YAxis
+                  allowDecimals={false}
+                  tick={{ fontSize: 11, fill: '#C4C0BC', fontFamily: '"DM Sans",sans-serif' }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <Tooltip content={<CustomBarTooltip />} cursor={{ fill: 'rgba(45,82,224,0.04)' }} />
+                <Bar
+                  dataKey="count"
+                  fill="url(#barGradient)"
+                  radius={[6, 6, 0, 0]}
+                  name="Applications"
+                  maxBarSize={40}
+                />
+                <defs>
+                  <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#2D52E0" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#4A3FDB" stopOpacity={0.7} />
+                  </linearGradient>
+                </defs>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
 
         {/* Donut chart */}
-        <Grid item xs={12} lg={5}>
-          <Card sx={{ height: '100%' }}>
-            <CardContent sx={{ p: { xs: 2.5, sm: 3 } }}>
-              <Box sx={{ mb: 3 }}>
-                <Typography sx={{ fontFamily: '"Sora",sans-serif', fontWeight: 700, fontSize: '0.9375rem', mb: 0.25 }}>
-                  Status Distribution
-                </Typography>
-                <Typography sx={{ fontSize: '0.8rem', color: '#9CA3AF' }}>All time</Typography>
-              </Box>
-              {analytics.totalApplications === 0 ? (
-                <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: 260, gap: 1.5 }}>
-                  <Box sx={{ width: 48, height: 48, borderRadius: '12px', bgcolor: '#F0EDE8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <BarChartIcon sx={{ fontSize: 28, color: '#5c5c5c' }} />
-                  </Box>
-                  <Typography sx={{ color: '#5c5c5c', fontSize: '1rem' }}>No applications yet</Typography>
-                </Box>
-              ) : (
-                <ResponsiveContainer width="100%" height={260}>
-                  <PieChart>
-                    <Pie
-                      data={filteredStatus}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={65}
-                      outerRadius={100}
-                      paddingAngle={3}
-                      dataKey="value"
-                      strokeWidth={0}
-                    >
-                      {filteredStatus.map((entry) => (
-                        <Cell key={entry.name} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: '#0D0F17',
-                        border: 'none',
-                        borderRadius: '10px',
-                        color: '#fff',
-                        fontSize: '0.8125rem',
-                        fontFamily: '"DM Sans",sans-serif',
-                      }}
-                      itemStyle={{ color: 'rgba(255,255,255,0.8)' }}
-                    />
-                    <Legend
-                      iconType="circle"
-                      iconSize={7}
-                      formatter={(val) => (
-                        <span style={{ fontSize: 12, color: '#6B7180', fontFamily: '"DM Sans",sans-serif' }}>{val}</span>
-                      )}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              )}
-            </CardContent>
-          </Card>
-        </Grid>
+        <div className="lg:col-span-5">
+          <div className="h-full rounded-xl border border-[#EEECE8] bg-white p-5 md:p-6">
+            <div className="mb-4">
+              <h3 className="text-sm font-bold text-[#0D0F17] mb-0.5" style={{ fontFamily: 'Sora, sans-serif' }}>Status Distribution</h3>
+              <p className="text-xs text-[#9CA3AF]">All time</p>
+            </div>
+            {analytics.totalApplications === 0 ? (
+              <div className="flex flex-col items-center justify-center h-[260px] gap-3">
+                <div className="w-12 h-12 rounded-xl bg-[#F0EDE8] flex items-center justify-center">
+                  <BarChart3 className="w-7 h-7 text-[#5c5c5c]" />
+                </div>
+                <p className="text-base text-[#5c5c5c]">No applications yet</p>
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height={260}>
+                <PieChart>
+                  <Pie
+                    data={filteredStatus}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={65}
+                    outerRadius={100}
+                    paddingAngle={3}
+                    dataKey="value"
+                    strokeWidth={0}
+                  >
+                    {filteredStatus.map((entry) => (
+                      <Cell key={entry.name} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#0D0F17',
+                      border: 'none',
+                      borderRadius: '10px',
+                      color: '#fff',
+                      fontSize: '0.8125rem',
+                      fontFamily: '"DM Sans",sans-serif',
+                    }}
+                    itemStyle={{ color: 'rgba(255,255,255,0.8)' }}
+                  />
+                  <Legend
+                    iconType="circle"
+                    iconSize={7}
+                    formatter={(val) => (
+                      <span style={{ fontSize: 12, color: '#6B7180', fontFamily: '"DM Sans",sans-serif' }}>{val}</span>
+                    )}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+        </div>
 
         {/* Status breakdown row */}
-        <Grid item xs={12}>
-          <Card>
-            <CardContent sx={{ p: { xs: 2.5, sm: 3 } }}>
-              <Typography sx={{ fontFamily: '"Sora",sans-serif', fontWeight: 700, fontSize: '0.9375rem', mb: 2.5 }}>
-                Breakdown by Status
-              </Typography>
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
-                {analytics.statusDistribution.map((s) => (
-                  <StatusRowCard
-                    key={s.name}
-                    name={s.name}
-                    value={s.value}
-                    color={s.color}
-                    total={analytics.totalApplications}
-                  />
-                ))}
-              </Stack>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-    </Box>
+        <div className="lg:col-span-12">
+          <div className="rounded-xl border border-[#EEECE8] bg-white p-5 md:p-6">
+            <h3 className="text-sm font-bold text-[#0D0F17] mb-5" style={{ fontFamily: 'Sora, sans-serif' }}>Breakdown by Status</h3>
+            <div className="flex flex-col sm:flex-row gap-3">
+              {analytics.statusDistribution.map((s) => (
+                <StatusRowCard
+                  key={s.name}
+                  name={s.name}
+                  value={s.value}
+                  color={s.color}
+                  total={analytics.totalApplications}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
