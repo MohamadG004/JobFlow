@@ -47,7 +47,7 @@ const BrandPanel: React.FC = () => {
           <br />
           <span
             className="text-transparent bg-clip-text"
-            style={{ background: 'linear-gradient(90deg, #818CF8 0%, #C084FC 100%)' }}
+            style={{ backgroundImage: 'linear-gradient(90deg, #818CF8 0%, #C084FC 100%)' }}
           >
             every application.
           </span>
