@@ -3,24 +3,6 @@ import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { ArrowRight, Briefcase, UserPlus, LogIn, Eye } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
-// ── Mini Kanban Preview Card ─────────────────────────────────────────────────
-const PreviewCard: React.FC<{
-  company: string;
-  role: string;
-  date: string;
-  color: string;
-  delay?: string;
-}> = ({ company, role, date, color, delay = '0s' }) => (
-  <div
-    className="bg-white border border-[#EEECE8] border-l-3 rounded-lg p-2.5 shadow-sm"
-    style={{ borderLeftColor: color, animation: `float 6s ease-in-out infinite ${delay}` }}
-  >
-    <p className="font-bold text-xs text-[#0D0F17]" style={{ fontFamily: 'Sora, sans-serif' }}>{company}</p>
-    <p className="text-[0.72rem] text-[#6B7180] mt-0.5">{role}</p>
-    <p className="text-[0.68rem] text-[#9CA3AF] mt-1.5">{date}</p>
-  </div>
-);
-
 // ── Feature Pill ─────────────────────────────────────────────────────────────
 const FeaturePill: React.FC<{ icon: string; label: string }> = ({ icon, label }) => (
   <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/85 backdrop-blur-sm border border-[#EEECE8] rounded-full shadow-sm">
