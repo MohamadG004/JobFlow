@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Plus, Search, Edit2, Trash2, Calendar, Inbox } from 'lucide-react';
+import { Plus, Search, Edit2, Trash2, Calendar, Inbox, Briefcase } from 'lucide-react';
 import {
   DndContext, DragEndEvent, PointerSensor, useSensor, useSensors,
   DragOverlay, DragStartEvent, DragOverEvent, closestCorners,
@@ -29,6 +29,11 @@ const COLUMNS: {
   { id: 'Rejected',  label: 'Rejected',  color: '#B91C1C', bgColor: '#FEF2F2', dotColor: '#DC2626' },
 ];
 
+// ── Decorative orb ──────────────────────────────────────
+const Orb: React.FC<{ style?: React.CSSProperties }> = ({ style = {} }) => (
+  <div className="absolute rounded-full pointer-events-none" style={style} />
+);
+
 // ── Application Card ──────────────────────────────────────────────────────────
 interface CardProps {
   app: Application;
@@ -54,10 +59,16 @@ const AppCard: React.FC<CardProps> = ({ app, onEdit, onDelete }) => {
       }}
       {...attributes}
       {...listeners}
-      className="bg-white rounded-xl border border-[#EEECE8] border-l-3 p-4 cursor-grab select-none relative overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
+      className="group bg-white rounded-xl border border-[#EEECE8] border-l-4 p-4 cursor-grab select-none relative overflow-hidden hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
     >
-      {/* Action buttons (revealed on hover) */}
-      <div className="absolute top-2 right-2 flex gap-0.5 p-0.5 bg-white/95 backdrop-blur-sm rounded-lg border border-[#EEECE8] opacity-0 hover:opacity-100 transition-opacity">
+      {/* Subtle accent wash on hover */}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-xl"
+        style={{ background: `radial-gradient(circle at 0% 0%, ${col.color}0C 0%, transparent 60%)` }}
+      />
+
+      {/* Action buttons */}
+      <div className="absolute top-2 right-2 flex gap-0.5 p-0.5 bg-white/95 backdrop-blur-sm rounded-lg border border-[#EEECE8] opacity-0 group-hover:opacity-100 transition-opacity">
         <button
           onClick={(e) => { e.stopPropagation(); onEdit(app); }}
           className="p-1 rounded-md text-[#9CA3AF] hover:text-[#2D52E0] hover:bg-[#EEF2FF] transition-all"
@@ -73,7 +84,7 @@ const AppCard: React.FC<CardProps> = ({ app, onEdit, onDelete }) => {
       </div>
 
       {/* Card content */}
-      <div className="pr-6">
+      <div className="pr-6 relative">
         <p className="font-bold text-sm text-[#0D0F17] mb-0.5 line-clamp-1" style={{ fontFamily: 'Sora, sans-serif' }}>
           {app.company}
         </p>
@@ -81,12 +92,12 @@ const AppCard: React.FC<CardProps> = ({ app, onEdit, onDelete }) => {
       </div>
 
       {app.notes && (
-        <p className="mt-2.5 text-xs text-[#9CA3AF] line-clamp-2">
+        <p className="mt-2.5 text-xs text-[#9CA3AF] line-clamp-2 relative">
           {app.notes}
         </p>
       )}
 
-      <div className="flex items-center gap-1 mt-3">
+      <div className="flex items-center gap-1 mt-3 relative">
         <Calendar size={11} className="text-[#C4C0BC]" />
         <span className="text-[0.72rem] text-[#C4C0BC] font-medium">
           {format(new Date(app.applied_date), 'MMM d, yyyy')}
@@ -115,19 +126,22 @@ const KanbanColumn: React.FC<ColumnProps> = ({
 
   return (
     <div
-      className="w-[82vw] sm:w-[300px] shrink-0 rounded-2xl flex flex-col gap-3 max-h-[calc(100vh-144px)] overflow-hidden"
-      style={{ backgroundColor: bgColor, border: `1px solid ${color}1A` }}
+      className="w-[82vw] sm:w-[300px] shrink-0 rounded-2xl flex flex-col gap-3 max-h-[calc(100vh-160px)] overflow-hidden"
+      style={{ backgroundColor: bgColor, border: `1px solid ${color}22` }}
     >
       {/* Column header */}
       <div className="flex items-center justify-between px-4 pt-4 pb-0">
         <div className="flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: color }} />
-          <span className="text-xs font-bold" style={{ color, fontFamily: 'Sora, sans-serif', letterSpacing: '0.01em' }}>
+          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
+          <span
+            className="text-xs font-extrabold tracking-wide"
+            style={{ color, fontFamily: 'Sora, sans-serif' }}
+          >
             {label}
           </span>
           <div
-            className="min-w-5 h-4.5 px-1.5 rounded-md flex items-center justify-center"
-            style={{ backgroundColor: `${color}18` }}
+            className="min-w-5 h-5 px-1.5 rounded-md flex items-center justify-center"
+            style={{ backgroundColor: `${color}1A` }}
           >
             <span className="text-[0.7rem] font-bold" style={{ color, lineHeight: 1 }}>
               {applications.length}
@@ -157,7 +171,7 @@ const KanbanColumn: React.FC<ColumnProps> = ({
         </SortableContext>
 
         {applications.length === 0 && (
-          <div className="flex-1 flex flex-col items-center justify-center py-8 gap-2">
+          <div className="flex-1 flex flex-col items-center justify-center py-10 gap-2">
             <Inbox size={28} style={{ color: `${color}40` }} />
             <span className="text-xs font-medium" style={{ color: `${color}60` }}>
               Drop here
@@ -320,55 +334,95 @@ const DashboardPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-[80vh]">
-        <div className="w-7 h-7 border-3 border-[#2D52E0] border-t-transparent rounded-full animate-spin" />
+      <div className="flex justify-center items-center h-screen bg-[#FAFAF8]">
+        <div
+          className="w-8 h-8 rounded-full border-[3px] border-t-transparent animate-spin"
+          style={{ borderColor: '#2D52E0', borderTopColor: 'transparent' }}
+        />
       </div>
     );
   }
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden">
-      {/* Header */}
-      <div className="px-4 sm:px-6 py-4 bg-white border-b border-[#EEECE8] shrink-0">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h2 className="text-xl font-extrabold text-[#0D0F17]" style={{ fontFamily: 'Sora, sans-serif', letterSpacing: '-0.02em' }}>
-              Job Board
-            </h2>
-            <p className="text-[0.8125rem] text-[#6B7180] mt-1">
-              {applications.length} application{applications.length !== 1 ? 's' : ''} tracked
-            </p>
+    <div className="h-screen flex flex-col overflow-hidden bg-[#FAFAF8]">
+
+      {/* ── Header ───────────────────────────────────────────────────────── */}
+      <div className="relative shrink-0 bg-white border-b border-[#EEECE8] overflow-hidden">
+        {/* Decorative orbs — mirrors the landing page blobs, kept subtle */}
+        <Orb style={{
+          top: '-80%', right: '-5%', width: 340, height: 340,
+          background: 'radial-gradient(circle, rgba(124,58,237,0.07) 0%, transparent 65%)',
+          pointerEvents: 'none',
+        }} />
+        <Orb style={{
+          top: '-60%', left: '-4%', width: 260, height: 260,
+          background: 'radial-gradient(circle, rgba(45,82,224,0.06) 0%, transparent 65%)',
+          pointerEvents: 'none',
+        }} />
+
+        <div className="relative z-10 px-5 sm:px-7 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          {/* Brand + title */}
+          <div className="flex items-center gap-3">
+            <div
+              className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+              style={{
+                background: 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)',
+                boxShadow: '0 2px 8px rgba(45,82,224,0.28)',
+              }}
+            >
+              <Briefcase className="text-white w-4 h-4" />
+            </div>
+            <div>
+              <h1
+                className="text-lg font-extrabold text-[#0D0F17] leading-none tracking-tight"
+                style={{ fontFamily: 'Sora, sans-serif' }}
+              >
+                Job Board
+              </h1>
+              <p className="text-[0.78rem] text-[#9CA3AF] mt-0.5">
+                {applications.length} application{applications.length !== 1 ? 's' : ''} tracked
+              </p>
+            </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="relative w-full sm:w-[230px]">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+          {/* Controls */}
+          <div className="flex items-center gap-2.5">
+            {/* Search */}
+            <div className="relative w-full sm:w-[240px]">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9CA3AF]" />
               <input
                 type="text"
-                placeholder="Search company or role"
+                placeholder="Search company or role…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full h-9 pl-9 pr-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+                className="w-full h-9 pl-9 pr-3 bg-[#FAFAF8] border border-[#EEECE8] rounded-lg text-sm text-[#0D0F17] placeholder-[#C4C0BC] focus:outline-none focus:ring-2 focus:ring-[#2D52E0]/25 focus:border-[#2D52E0] transition-all"
               />
             </div>
+
+            {/* Add button — matches landing page CTA style */}
             <button
               onClick={() => handleAdd('Applied')}
-              className="h-9 px-4 bg-[var(--color-primary)] text-white font-semibold rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors whitespace-nowrap flex items-center gap-1.5"
+              className="h-9 px-4 text-sm font-bold text-white rounded-lg transition-all hover:shadow-lg hover:-translate-y-0.5 whitespace-nowrap flex items-center gap-1.5"
+              style={{
+                background: 'linear-gradient(135deg, #2D52E0 0%, #7C3AED 100%)',
+                boxShadow: '0 2px 10px rgba(45,82,224,0.28)',
+              }}
             >
-              <Plus size={16} />
+              <Plus size={15} />
               Add
             </button>
           </div>
         </div>
       </div>
 
+      {/* Error banner */}
       {error && (
-        <div className="mx-6 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+        <div className="mx-5 sm:mx-7 mt-4 p-3.5 bg-[#FEF2F2] border border-[#DC2626]/20 rounded-xl text-[#B91C1C] text-sm font-medium">
           {error}
         </div>
       )}
 
-      {/* Kanban Board */}
+      {/* ── Kanban Board ─────────────────────────────────────────────────── */}
       <div className="flex-1 overflow-auto p-4 sm:p-6">
         <DndContext
           sensors={sensors}
@@ -395,7 +449,7 @@ const DashboardPage: React.FC = () => {
 
           <DragOverlay dropAnimation={{ duration: 180, easing: 'ease' }}>
             {activeApp && (
-              <div className="opacity-96 rotate-3 scale-[1.02] shadow-xl rounded-xl cursor-grabbing">
+              <div className="opacity-95 rotate-2 scale-[1.02] shadow-2xl rounded-xl cursor-grabbing">
                 <AppCard app={activeApp} onEdit={() => {}} onDelete={() => {}} />
               </div>
             )}
@@ -403,7 +457,7 @@ const DashboardPage: React.FC = () => {
         </DndContext>
       </div>
 
-      {/* Dialog */}
+      {/* ── Application Form Dialog ───────────────────────────────────────── */}
       <ApplicationFormDialog
         open={dialogOpen}
         onClose={() => { setDialogOpen(false); setEditingApp(null); }}
@@ -412,35 +466,70 @@ const DashboardPage: React.FC = () => {
         defaultStatus={defaultStatus}
       />
 
-      {/* Confirm Dialog */}
+      {/* ── Confirm Delete Dialog ─────────────────────────────────────────── */}
       {confirmDialog.open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setConfirmDialog({ open: false, appId: null })} />
-          <div className="relative bg-white rounded-xl shadow-xl max-w-sm w-full mx-4 p-6">
-            <h3 className="text-lg font-bold text-[#0D0F17] mb-2">Delete Application</h3>
-            <p className="text-[#6B7180] mb-6">Are you sure you want to delete this application? This action cannot be undone.</p>
-            <div className="flex gap-3 justify-end">
-              <button
-                onClick={() => setConfirmDialog({ open: false, appId: null })}
-                className="px-4 py-2 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-[#0D0F17]/40 backdrop-blur-sm"
+            onClick={() => setConfirmDialog({ open: false, appId: null })}
+          />
+          {/* Panel — matches landing page CTA card style */}
+          <div
+            className="relative bg-white rounded-2xl shadow-2xl max-w-sm w-full mx-4 p-7 border border-[#EEECE8]"
+            style={{ boxShadow: '0 8px 32px rgba(13,15,23,0.12), 0 2px 8px rgba(13,15,23,0.06)' }}
+          >
+            {/* Accent orb */}
+            <div
+              className="absolute top-0 right-0 w-40 h-40 rounded-full pointer-events-none"
+              style={{
+                background: 'radial-gradient(circle, rgba(220,38,38,0.06) 0%, transparent 65%)',
+                transform: 'translate(30%, -30%)',
+              }}
+            />
+            <div className="relative">
+              <h3
+                className="text-lg font-extrabold text-[#0D0F17] mb-1.5 tracking-tight"
+                style={{ fontFamily: 'Sora, sans-serif' }}
               >
-                Cancel
-              </button>
-              <button
-                onClick={handleConfirmDelete}
-                className="px-4 py-2 bg-[var(--color-error)] text-white font-semibold rounded-lg hover:bg-[var(--color-error-dark)] transition-colors"
-              >
-                Delete
-              </button>
+                Delete Application
+              </h3>
+              <p className="text-sm text-[#6B7180] leading-relaxed mb-7">
+                Are you sure you want to delete this application? This action cannot be undone.
+              </p>
+              <div className="flex gap-2.5 justify-end">
+                <button
+                  onClick={() => setConfirmDialog({ open: false, appId: null })}
+                  className="px-4 py-2 text-sm font-semibold text-[#6B7180] bg-[#F5F4F1] hover:bg-[#EEECE8] rounded-xl transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleConfirmDelete}
+                  className="px-4 py-2 text-sm font-bold text-white rounded-xl transition-all hover:shadow-lg hover:-translate-y-0.5"
+                  style={{
+                    background: 'linear-gradient(135deg, #DC2626 0%, #B91C1C 100%)',
+                    boxShadow: '0 2px 8px rgba(220,38,38,0.28)',
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Snackbar */}
+      {/* ── Snackbar ──────────────────────────────────────────────────────── */}
       {snackbar.open && (
         <div className="fixed bottom-6 right-6 z-50">
-          <div className="px-4 py-3 bg-[#0D0F17] text-white rounded-lg shadow-lg text-sm">
+          <div
+            className="px-4 py-3 text-white rounded-xl shadow-xl text-sm font-semibold"
+            style={{
+              background: 'linear-gradient(135deg, #0D0F17 0%, #1a1d2e 100%)',
+              boxShadow: '0 4px 16px rgba(13,15,23,0.25)',
+            }}
+          >
             {snackbar.message}
           </div>
         </div>
