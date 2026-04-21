@@ -11,7 +11,7 @@ import {
 import { useAuth } from '@/context/AuthContext';
 
 const navItems = [
-  { label: 'Board', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
+  { label: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
   { label: 'Analytics', path: '/analytics', icon: <BarChart3 size={20} /> },
   { label: 'Profile', path: '/profile', icon: <User size={20} /> },
 ];
@@ -115,7 +115,7 @@ const AppLayout: React.FC = () => {
   );
 
   return (
-    <div className="flex min-h-screen bg-[var(--color-bg-default)]">
+    <div className="flex h-screen overflow-hidden bg-[var(--color-bg-default)]">
       {/* Mobile Header */}
       {isMobile && (
         <div className="fixed top-0 left-0 right-0 z-40 bg-white border-b border-[var(--color-divider)] h-14 flex items-center px-4">
@@ -169,7 +169,7 @@ const AppLayout: React.FC = () => {
 
       {/* Main content */}
       <div
-        className={`flex-1 min-h-screen overflow-hidden ${
+        className={`flex-1 overflow-y-auto ${
           isMobile ? 'pt-14' : ''
         }`}
       >
