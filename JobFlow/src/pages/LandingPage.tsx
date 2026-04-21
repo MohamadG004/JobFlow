@@ -191,7 +191,7 @@ const LandingPage: React.FC = () => {
               Ready to land your next role?
             </h2>
             <p className="text-[#6B7180] text-base mb-10 max-w-md mx-auto leading-relaxed">
-              A cleaner, smarter way to manage your job search — from first application to final offer.
+              A cleaner, smarter way to manage your job search, from first application to final offer.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
@@ -215,8 +215,8 @@ const LandingPage: React.FC = () => {
 
             <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
               <Check label="No credit card required" />
-              <Check label="Free forever plan" />
-              <Check label="Cancel anytime" />
+              <Check label="Start tracking jobs instantly" />
+              <Check label="Free to use" />
             </div>
           </div>
         </div>
