@@ -75,8 +75,9 @@ const ApplicationFormDialog: React.FC<Props> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <style>{`input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; }`}</style>
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/50 cursor-pointer" onClick={onClose} />
       
       {/* Dialog */}
       <div className="relative w-full max-w-md mx-4 bg-white rounded-2xl shadow-2xl animate-in fade-in zoom-in-95 duration-200">
@@ -87,7 +88,7 @@ const ApplicationFormDialog: React.FC<Props> = ({
           </h3>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+            className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
           >
             <X size={20} />
           </button>
@@ -125,7 +126,7 @@ const ApplicationFormDialog: React.FC<Props> = ({
             <select
               value={form.status}
               onChange={handleChange('status')}
-              className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all bg-white"
+              className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all bg-white cursor-pointer"
             >
               {STATUSES.map((s) => (
                 <option key={s} value={s}>{s}</option>
@@ -160,14 +161,14 @@ const ApplicationFormDialog: React.FC<Props> = ({
         <div className="flex items-center justify-end gap-2 px-6 pb-6">
           <button
             onClick={onClose}
-            className="px-4 py-2 border border-gray-200 text-gray-600 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+            className="px-4 py-2 border border-gray-200 text-gray-600 font-medium rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="px-4 py-2 bg-[var(--color-primary)] text-white font-semibold rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors disabled:opacity-50"
+            className="px-4 py-2 bg-[var(--color-primary)] text-white font-semibold rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors disabled:opacity-50 cursor-pointer"
           >
             {loading ? 'Saving...' : initialData ? 'Save Changes' : 'Add Application'}
           </button>

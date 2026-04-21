@@ -158,7 +158,7 @@ const LandingPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <FeatureCard icon={<Layers className="w-5 h-5" />} accent="#2D52E0" title="Pipeline Boards" description="Visualize your entire job search across stages — Applied, Interview, Offer, and beyond." />
+          <FeatureCard icon={<Layers className="w-5 h-5" />} accent="#2D52E0" title="Pipeline Boards" description="Visualize your entire job search across stages, Applied, Interview, Offer, and beyond." />
           <FeatureCard icon={<BarChart3 className="w-5 h-5" />} accent="#7C3AED" title="Smart Analytics" description="Understand your response rates, interview conversion, and which companies are moving fast." />
           <FeatureCard icon={<Zap className="w-5 h-5" />} accent="#D97706" title="Quick Add" description="Log an application in seconds. Just paste a URL and JobFlow fills in the details automatically." />
           <FeatureCard icon={<Shield className="w-5 h-5" />} accent="#059669" title="Reminders & Follow-ups" description="Never let a hot lead go cold. Set follow-up reminders and get notified before deadlines." />
