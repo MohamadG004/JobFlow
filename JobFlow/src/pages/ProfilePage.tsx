@@ -31,7 +31,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
   return (
     <div
       onClick={handleClick}
-      className={`relative w-13 h-13 rounded-xl shrink-0 overflow-hidden cursor-pointer ${editable ? 'hover:opacity-90' : ''}`}
+      className={`group relative w-13 h-13 rounded-xl shrink-0 overflow-hidden cursor-pointer`}
       style={{ boxShadow: '0 3px 10px rgba(45,82,224,0.30)' }}
     >
       {avatarUrl ? (
@@ -43,7 +43,12 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
       )}
 
       {editable && (
-        <div className={`absolute inset-0 flex items-center justify-center transition-opacity ${uploading ? 'opacity-100' : 'opacity-0'}`} style={{ backgroundColor: 'rgba(0,0,0,0.45)', borderRadius: '14px' }}>
+        <div
+          className={`absolute inset-0 flex items-center justify-center transition-opacity ${
+            uploading ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+          }`}
+          style={{ backgroundColor: 'rgba(0,0,0,0.45)', borderRadius: '14px' }}
+        >
           {uploading ? (
             <Loader2 className="w-5 h-5 text-white animate-spin" />
           ) : (
