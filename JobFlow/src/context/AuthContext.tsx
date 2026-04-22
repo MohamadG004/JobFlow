@@ -72,7 +72,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signIn = useCallback(async (email: string, password: string) => {
     setGuestMode(false);
     sessionStorage.removeItem('jobflow-guest');
-    await authService.signIn(email, password);
+    const data = await authService.signIn(email, password);
+
+    if (data.session?.user) {
+      setUser({
+        id: data.session.user.id,
+        email: data.session.user.email ?? '',
+        username: data.session.user.user_metadata?.username,
+      });
+      setAvatarUrl(data.session.user.user_metadata?.avatar_url ?? null);
+    }
   }, []);
 
   const signUp = useCallback(async (email: string, password: string, username: string) => {
