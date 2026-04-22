@@ -72,10 +72,11 @@ const AppCard: React.FC<CardProps> = ({ app, onEdit, onDelete }) => {
         {/* Drag handle — only this area initiates drag */}
         <div
           {...listeners}
-          className="flex items-center cursor-grab text-[#D4D0CC] hover:text-[#9CA3AF] transition-colors"
+          className="flex items-center text-[#D4D0CC] hover:text-[#9CA3AF] transition-colors -ml-1 px-1.5 py-1 rounded"
           title="Drag to move"
+          style={{ cursor: 'pointer' }}
         >
-          <GripVertical size={12} />
+          <GripVertical size={14} />
         </div>
 
         {/* Action buttons — always visible, pointer events isolated from drag */}
@@ -86,7 +87,7 @@ const AppCard: React.FC<CardProps> = ({ app, onEdit, onDelete }) => {
             className="p-1.5 rounded-md text-[#9CA3AF] hover:text-[#2D52E0] hover:bg-[#EEF2FF] transition-all cursor-pointer"
             title="Edit"
           >
-            <Edit2 size={13} />
+            <Edit2 size={14} />
           </button>
           <button
             onPointerDown={(e) => e.stopPropagation()}
@@ -94,7 +95,7 @@ const AppCard: React.FC<CardProps> = ({ app, onEdit, onDelete }) => {
             className="p-1.5 rounded-md text-[#9CA3AF] hover:text-[#DC2626] hover:bg-[#FEF2F2] transition-all cursor-pointer"
             title="Delete"
           >
-            <Trash2 size={13} />
+            <Trash2 size={14} />
           </button>
         </div>
       </div>
