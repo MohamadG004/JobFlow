@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Lock } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { supabase } from '@/services/supabase';
 
 const ResetPasswordPage: React.FC = () => {
   const { updatePassword } = useAuth();
@@ -10,8 +11,53 @@ const ResetPasswordPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [loading, setLoading] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
+  const [validLink, setValidLink] = useState(true);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+
+  // 🔥 Handle Supabase recovery session
+  useEffect(() => {
+    const handleRecovery = async () => {
+      try {
+        const hash = window.location.hash;
+
+        if (hash.includes('access_token')) {
+          const params = new URLSearchParams(hash.substring(1));
+
+          const access_token = params.get('access_token');
+          const refresh_token = params.get('refresh_token');
+
+          if (access_token && refresh_token) {
+            const { error } = await supabase.auth.setSession({
+              access_token,
+              refresh_token,
+            });
+
+            if (error) {
+              throw error;
+            }
+
+            // ✅ Clean URL after success
+            window.history.replaceState({}, document.title, '/reset-password');
+          }
+        }
+
+        // ✅ Verify session exists
+        const { data } = await supabase.auth.getSession();
+
+        if (!data.session) {
+          setValidLink(false);
+        }
+      } catch {
+        setValidLink(false);
+      } finally {
+        setCheckingSession(false);
+      }
+    };
+
+    handleRecovery();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +77,6 @@ const ResetPasswordPage: React.FC = () => {
       await updatePassword(password);
       setSuccess(true);
 
-      // optional redirect after a delay
       setTimeout(() => {
         navigate('/login');
       }, 2500);
@@ -80,7 +125,31 @@ const ResetPasswordPage: React.FC = () => {
           Back to sign in
         </RouterLink>
 
-        {success ? (
+        {/* ⏳ Checking session */}
+        {checkingSession ? (
+          <div className="text-center text-sm text-gray-500">
+            Verifying reset link…
+          </div>
+        ) : !validLink ? (
+          /* ❌ Invalid or expired link */
+          <div className="text-center space-y-4">
+            <div className="text-3xl">⚠️</div>
+            <h2 className="text-xl font-bold text-[#0D0F17]">
+              Invalid or expired link
+            </h2>
+            <p className="text-[#6B7180] text-sm">
+              This password reset link is no longer valid. Please request a new one.
+            </p>
+
+            <RouterLink
+              to="/forgot-password"
+              className="block w-full py-3 bg-[var(--color-primary)] text-white font-semibold rounded-lg text-center"
+            >
+              Request new link
+            </RouterLink>
+          </div>
+        ) : success ? (
+          /* ✅ Success state */
           <div className="text-center space-y-6">
             <div className="text-3xl">✅</div>
             <div>
@@ -100,6 +169,7 @@ const ResetPasswordPage: React.FC = () => {
             </RouterLink>
           </div>
         ) : (
+          /* 🔐 Form */
           <>
             <div className="mb-6">
               <div
