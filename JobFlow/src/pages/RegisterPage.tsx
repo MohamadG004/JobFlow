@@ -38,43 +38,8 @@ const RegisterPage: React.FC = () => {
   };
 
   if (success) {
-    return (
-      <div className="min-h-screen bg-[#FAFAF8] relative overflow-hidden flex items-center justify-center p-6">
-        <Orb style={{ top: '-15%', right: '-10%', width: 600, height: 600, background: 'radial-gradient(circle, rgba(124,58,237,0.09) 0%, transparent 65%)' }} />
-        <Orb style={{ bottom: '-10%', left: '-10%', width: 500, height: 500, background: 'radial-gradient(circle, rgba(45,82,224,0.08) 0%, transparent 65%)' }} />
-
-        <div
-          className="relative z-10 max-w-[420px] w-full text-center bg-white border border-[#EEECE8] rounded-3xl p-8 sm:p-10"
-          style={{ boxShadow: '0 4px 24px rgba(13,15,23,0.06), 0 1px 4px rgba(13,15,23,0.04)' }}
-        >
-          <div
-            className="w-16 h-16 rounded-2xl mx-auto mb-6 flex items-center justify-center text-3xl"
-            style={{ background: 'linear-gradient(135deg, #EEF2FF 0%, #EDE9FE 100%)' }}
-          >
-            📬
-          </div>
-          <h2
-            className="text-xl font-extrabold mb-2 text-[#0D0F17]"
-            style={{ fontFamily: 'Sora, sans-serif' }}
-          >
-            Check your inbox
-          </h2>
-          <p className="text-[#6B7180] mb-6 leading-relaxed text-sm">
-            We sent a confirmation link to{' '}
-            <span className="font-semibold text-[#0D0F17]">{email}</span>.
-            Click it to activate your account.
-          </p>
-          <Link
-            to="/login"
-            className="block w-full py-3 text-sm font-bold text-white rounded-xl transition-all hover:shadow-lg hover:-translate-y-0.5"
-            style={{ background: 'linear-gradient(135deg, #2D52E0 0%, #7C3AED 100%)', boxShadow: '0 4px 14px rgba(45,82,224,0.28)' }}
-          >
-            Back to sign in
-          </Link>
-        </div>
-      </div>
-    );
-  }
+      navigate("/login");
+    }
 
   return (
     <div className="min-h-screen bg-[#FAFAF8] relative overflow-hidden flex flex-col">
