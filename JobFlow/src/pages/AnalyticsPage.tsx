@@ -145,8 +145,8 @@ const AnalyticsPage: React.FC = () => {
         <div className="lg:col-span-7">
           <div className="h-full rounded-xl border border-[#EEECE8] bg-white p-5 md:p-6">
             <div className="mb-4">
-              <h3 className="text-sm font-bold text-[#0D0F17] mb-0.5" style={{ fontFamily: 'Sora, sans-serif' }}>Applications per Week</h3>
-              <p className="text-xs text-[#9CA3AF]">Last 8 weeks</p>
+              <h3 className="text-sm font-bold text-[#0D0F17] mb-0.5" style={{ fontFamily: 'Sora, sans-serif' }}>Applications per Day</h3>
+              <p className="text-xs text-[#9CA3AF]">Last 7 days</p>
             </div>
             <ResponsiveContainer width="100%" height={260}>
               <BarChart
