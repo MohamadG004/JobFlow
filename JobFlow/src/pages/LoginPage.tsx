@@ -153,7 +153,7 @@ const LoginPage: React.FC = () => {
             <p className="text-[#6B7180] text-sm">
               Don&apos;t have an account?{' '}
               <Link to="/register" className="font-bold text-[#2D52E0] no-underline hover:underline">
-                Create one free
+                Create one
               </Link>
             </p>
           </div>
