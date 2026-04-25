@@ -159,7 +159,7 @@ const RegisterPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 text-sm font-bold text-white rounded-xl transition-all hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:translate-y-0 disabled:shadow-none flex items-center justify-center gap-2 mt-8"
+                className="w-full py-3 text-sm font-bold text-white rounded-xl transition-all hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:translate-y-0 disabled:shadow-none flex items-center justify-center gap-2 mt-8 cursor-pointer"
                 style={{ background: 'linear-gradient(135deg, #2D52E0 0%, #7C3AED 100%)', boxShadow: '0 4px 14px rgba(45,82,224,0.28)' }}
               >
                 {loading ? 'Creating account…' : 'Create account'}
