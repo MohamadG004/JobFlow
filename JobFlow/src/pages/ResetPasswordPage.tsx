@@ -149,9 +149,7 @@ const ResetPasswordPage: React.FC = () => {
             </RouterLink>
           </div>
         ) : success ? (
-          /* ✅ Success state */
           <div className="text-center space-y-6">
-            <div className="text-3xl">✅</div>
             <div>
               <h2 className="text-xl font-extrabold text-[#0D0F17] mb-2">
                 Password updated
