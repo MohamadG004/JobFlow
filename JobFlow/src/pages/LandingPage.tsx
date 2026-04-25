@@ -218,7 +218,7 @@ const LandingPage: React.FC = () => {
         <div ref={heroGuestRef} className="fade-up">
           <button
             onClick={handleGuest}
-            className="inline-flex items-center gap-1.5 text-xs text-[#9CA3AF] hover:text-[#6B7180] transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs text-[#9CA3AF] hover:text-[#6B7180] transition-colors cursor-pointer"
           >
             <Eye className="w-3.5 h-3.5" />
             Continue without an account
@@ -287,7 +287,7 @@ const LandingPage: React.FC = () => {
               </RouterLink>
               <button
                 onClick={handleGuest}
-                className="inline-flex items-center gap-1.5 px-6 py-3 text-sm font-semibold text-[#6B7180] bg-[#F5F4F1] hover:bg-[#EEECE8] rounded-xl transition-all"
+                className="inline-flex items-center gap-1.5 px-6 py-3 text-sm font-semibold text-[#6B7180] bg-[#F5F4F1] hover:bg-[#EEECE8] rounded-xl transition-all cursor-pointer"
               >
                 <Eye className="w-4 h-4" />
                 Try as guest

@@ -161,7 +161,7 @@ const ResetPasswordPage: React.FC = () => {
 
             <RouterLink
               to="/login"
-              className="block w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50"
+              className="block w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 cursor-pointer"
             >
               Go to login
             </RouterLink>
@@ -216,7 +216,7 @@ const ResetPasswordPage: React.FC = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 bg-[var(--color-primary)] text-white font-semibold rounded-lg hover:bg-[var(--color-primary-dark)] disabled:opacity-50"
+                  className="w-full py-3 bg-[var(--color-primary)] text-white font-semibold rounded-lg hover:bg-[var(--color-primary-dark)] disabled:opacity-50 cursor-pointer"
                 >
                   {loading ? 'Updating…' : 'Update password'}
                 </button>
