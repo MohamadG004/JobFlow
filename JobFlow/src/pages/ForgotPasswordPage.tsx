@@ -52,12 +52,6 @@ const ForgotPasswordPage: React.FC = () => {
 
         {sent ? (
           <div className="space-y-6 text-center">
-            <div
-              className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center text-2xl"
-              style={{ background: 'linear-gradient(135deg, #EEF2FF 0%, #EDE9FE 100%)' }}
-            >
-              ✉️
-            </div>
             <div>
               <h2
                 className="text-xl font-extrabold mb-2 text-[#0D0F17]"
