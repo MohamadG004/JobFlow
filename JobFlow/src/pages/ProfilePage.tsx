@@ -96,7 +96,7 @@ const SectionCard: React.FC<{
 
 // ── Profile Page ──────────────────────────────────────────────────────────────
 const ProfilePage: React.FC = () => {
-  const { user, guestMode, signOut, avatarUrl, uploadAvatar, deleteAccount } = useAuth();
+  const { user, guestMode, signOut, avatarUrl, uploadAvatar, deleteAccount, updateUsername } = useAuth();
   const navigate = useNavigate();
 
   const [password, setPassword] = useState('');
@@ -104,12 +104,39 @@ const ProfilePage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
+  const [username, setUsername] = useState(user?.username ?? '');
+  const [usernameLoading, setUsernameLoading] = useState(false);
+  const [usernameMsg, setUsernameMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [avatarMsg, setAvatarMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   const [deleteConfirm, setDeleteConfirm] = useState('');
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteMsg, setDeleteMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  const handleUsernameUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = username.trim();
+    if (!trimmed) {
+      setUsernameMsg({ type: 'error', text: 'Username cannot be empty' });
+      return;
+    }
+    if (trimmed === (user?.username ?? '')) {
+      setUsernameMsg({ type: 'error', text: 'That is already your username' });
+      return;
+    }
+    setUsernameLoading(true);
+    setUsernameMsg(null);
+    try {
+      await updateUsername(trimmed);
+      setUsernameMsg({ type: 'success', text: 'Username updated!' });
+    } catch (err) {
+      setUsernameMsg({ type: 'error', text: err instanceof Error ? err.message : 'Update failed' });
+    } finally {
+      setUsernameLoading(false);
+    }
+  };
 
   const handlePasswordUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -214,6 +241,43 @@ const ProfilePage: React.FC = () => {
             </div>
           </div>
         </SectionCard>
+
+        {/* Change username – signed-in users only */}
+        {!guestMode && (
+          <SectionCard
+            title="Username"
+            subtitle="Update your display name"
+            icon={<Lock size={17} />}
+          >
+            {usernameMsg && (
+              <div className={`mb-5 p-3 rounded-lg text-sm ${usernameMsg.type === 'success' ? 'bg-green-50 border border-green-200 text-green-700' : 'bg-red-50 border border-red-200 text-red-700'}`}>
+                {usernameMsg.text}
+              </div>
+            )}
+            <form onSubmit={handleUsernameUpdate}>
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-[#0D0F17] mb-1.5">New username</label>
+                  <input
+                    type="text"
+                    required
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+                    placeholder="Enter a new username"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={usernameLoading}
+                  className="px-4 py-2 bg-[var(--color-primary)] text-white font-semibold rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors disabled:opacity-50 cursor-pointer"
+                >
+                  {usernameLoading ? 'Saving…' : 'Save username'}
+                </button>
+              </div>
+            </form>
+          </SectionCard>
+        )}
 
         {/* Change password – signed-in users only */}
         {!guestMode && (
