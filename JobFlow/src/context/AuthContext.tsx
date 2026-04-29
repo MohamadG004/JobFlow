@@ -16,6 +16,7 @@ interface AuthContextValue {
   uploadAvatar: (file: File) => Promise<void>;
   deleteAccount: () => Promise<void>;
   updatePassword: (newPassword: string) => Promise<void>;
+  updateUsername: (username: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
 }
 
@@ -137,6 +138,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await authService.updatePassword(newPassword);
   }, []);
 
+  const updateUsername = useCallback(async (username: string) => {
+    await authService.updateUsername(username);
+    setUser((prev) => prev ? { ...prev, username } : prev);
+  }, []);
+
   const signInWithGoogle = useCallback(async () => {
     setGuestMode(false);
     sessionStorage.removeItem('jobflow-guest');
@@ -146,7 +152,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   return (
     <AuthContext.Provider value={{
       user, guestMode, loading, avatarUrl,
-      signIn, signUp, signOut, resetPassword, updatePassword,
+      signIn, signUp, signOut, resetPassword, updatePassword, updateUsername,
       enterGuestMode, uploadAvatar, deleteAccount, signInWithGoogle
     }}>
       {children}
